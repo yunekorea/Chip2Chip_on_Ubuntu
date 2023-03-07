@@ -12,6 +12,11 @@ int main(void){
 	u64 block =1;
 	u64 page =4;
 
+	printf("initialization phase : ");
+	if(c2c_init() == -1)
+		return(printf("failed\n"));
+	else
+		printf("done\n");
 
 	printf("program start \r\n\r\n");
 ///////////////////////////////////////////////////

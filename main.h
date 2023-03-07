@@ -9,7 +9,7 @@
 #include <stddef.h>
 
 /* register address*/
-#define C2C_BASE_ADDR 				0xa0000000
+#define C2C_BASE_ADDR 				0xa0080000 //0xa0000000
 #define READQ_ADDR_INTERVAL			0x10
 #define CMD_OFFSET 					0x00
 #define READ_STATUS_OFFSET 			0x10
@@ -129,6 +129,104 @@
 #define MAX_CMD_RDY_WAIT_CNT 		10000
 #define MAX_WR_DATA_READY_CNT 		10000
 
+#define REG_SIZE			0xint fd_memory;		//File descriptor of the memory device
+
+typedef struct _rgstr_vptr {
+	u64 *cmd;
+	u64 *read_stat;
+	u64 *read_data_0u;
+	u64 *read_data_0l;
+	u64 *read_data_1u;
+	u64 *read_data_1l;
+	u64 *read_data_2u;
+	u64 *read_data_2l;
+	u64 *read_data_3u;
+	u64 *read_data_3l;
+	u64 *read_data_4u;
+	u64 *read_data_4l;
+	u64 *read_data_5u;
+	u64 *read_data_5l;
+	u64 *read_data_6u;
+	u64 *read_data_6l;
+	u64 *read_data_7u;
+	u64 *read_data_7l;
+	u64 *wne_stat;
+
+	u64 *write_data_u;
+	u64 *write_data_l;
+} rgstr_vptr;
+
+int vptr_mmap(u64** vptr, unsigned int addr) {
+	return (*vptr = (u64 *)mmap(NULL, REG_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd_memory, addr));
+}	
+
+int c2c_init(void) {	//opening memory device as a file descriptor to use them with mmap/msync
+	
+	if((fd_memory = open("dev/mem", O_RDWR | O_SYNC)) != -1) { //"open" the memory device
+		return -1;
+	}
+
+	//assign vptr with mmap function
+	for(int i = 0; i < sizeof(rgstr_vptr)-2; i++) {
+		if(vptr_mmap(&rgstr_vptr[i], C2C_BASE_ADDR + (0x08 * i)) == -1)
+			return -1;
+	}
+	if(vptr_mmap(&rgstr_vptr[19], C2C_WRITE_DATA_UPPER_ADDR) == -1)
+		return -1;
+	if(vptr_mmap(&rgstr_vptr[20], C2C_WRITE_DATA_LOWER_ADDR) == -1)
+		return -1;
+	return 0;
+}
+
+void CTC_Out(u64* vptr, u64 command) {
+	*vptr = command;
+	msync(vptr, REG_SIZE, MS_SYNC);
+}
+
+u64 CTC_In(u64* vptr) {
+	return *vptr;
+}
+
+u64 CTC_Readq_In_Upper(u64 Qnumber) {
+	switch(Qnumber) {
+		case 0:
+			return CTC_In(rgstr_vptr.read_data_0u);
+		case 1:
+			return CTC_In(rgstr_vptr.read_data_1u);
+		case 2:
+			return CTC_In(rgstr_vptr.read_data_2u);
+		case 3:
+			return CTC_In(rgstr_vptr.read_data_3u);
+		case 4:
+			return CTC_In(rgstr_vptr.read_data_4u);
+		case 5:
+			return CTC_In(rgstr_vptr.read_data_5u);
+		case 6:
+			return CTC_In(rgstr_vptr.read_data_6u);
+		case 7:
+			return CTC_In(rgstr_vptr.read_data_7u);
+}
+
+u64 CTC_Readq_In_Lower(u64 Qnumber) {
+	switch(Qnumber) {
+		case 0:
+			return CTC_In(rgstr_vptr.read_data_0l);
+		case 1:
+			return CTC_In(rgstr_vptr.read_data_1l);
+		case 2:
+			return CTC_In(rgstr_vptr.read_data_2l);
+		case 3:
+			return CTC_In(rgstr_vptr.read_data_3l);
+		case 4:
+			return CTC_In(rgstr_vptr.read_data_4l);
+		case 5:
+			return CTC_In(rgstr_vptr.read_data_5l);
+		case 6:
+			return CTC_In(rgstr_vptr.read_data_6l);
+		case 7:
+			return CTC_In(rgstr_vptr.read_data_7l);
+}
+
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower){
 	u64 key = ACCESS_KEY;
 	u64 tag = 0;
@@ -137,7 +235,7 @@ int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* 
 	u64 readData_upper; // read queue에서 한번 dequeue된 값을 받아올 upper 변수
 	u64 readData_lower;	// read queue에서 한번 dequeue된 값을 받아올 lower 변수
 	int readyQ_number;
-	int i=0;
+	int i = 0;
 	/* command 생성 */
 	command = (key << KEY_BIT)					\
 			|(tag << TAG_BIT)					\
@@ -152,7 +250,9 @@ int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* 
 		return -1;
 	}
 	/* command 입력 */
-	Xil_Out64(C2C_CMD_ADDR, command);
+	CTC_Out(rgstr_vptr.cmd, command);
+	//Xil_Out64(C2C_CMD_ADDR, command);
+
 	/* read 동작이 flahs controller에 제대로 입력되어 read queue에 데이터가 쌓일 때 까지 기다림*/
 	/* 동시에 명령에 대한 데이터가 몇 번째 queue에 있는지를 readQ_number 변수에 가져옴 */
 	if(wait_flash_operation(op, tag, &readyQ_number, 0, 0) !=0){
@@ -162,9 +262,12 @@ int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* 
 	/* 8KB 용량 (==1page) 만큼 읽어 올 때 까지 반복*/
 	for(int i = 0; i<514; i++){
 		/*read queue upper에 저장된 값을 변수에 저장*/
-		pReadBuf_upper[i] = Xil_In64(C2C_READ_DATA0_UPPER_ADDR + readyQ_number*READQ_ADDR_INTERVAL);
+		pReadBuf_upper[i] = CTC_Readq_In_Upper(readyQ_number);
+		//pReadBuf_upper[i] = Xil_In64(C2C_READ_DATA0_UPPER_ADDR + readyQ_number*READQ_ADDR_INTERVAL);
+		
 		/*read queue lower에 저장된 값을 변수에 저장*/
-		pReadBuf_lower[i] = Xil_In64(C2C_READ_DATA0_LOWER_ADDR + readyQ_number*READQ_ADDR_INTERVAL);
+		pReadBuf_lower[i] = CTC_Readq_In_Lower(readyQ_number);
+		//pReadBuf_lower[i] = Xil_In64(C2C_READ_DATA0_LOWER_ADDR + readyQ_number*READQ_ADDR_INTERVAL);
 	}
 
 	printf("read page operation was finished\r\n");
@@ -197,7 +300,9 @@ int write_page(u64 bus, u64 chip, u64 block, u64 page, /*cosnt*/ u64* pWriteBuf_
 		return -1;
 	}
 	/* 명령 입력*/
-	Xil_Out64(C2C_CMD_ADDR, command);
+	CTC_Out(rgstr_vptr.cmd, command);
+	//Xil_Out64(C2C_CMD_ADDR, command);
+	
 	/* write data request가 나올 때 까지 기다리고 나오면 tag를 가져옴*/
 	if(wait_writeData_req(&requested_tag)!=0){
 		printf("Error: write data request time out\r\n");
@@ -215,21 +320,31 @@ int write_page(u64 bus, u64 chip, u64 block, u64 page, /*cosnt*/ u64* pWriteBuf_
 		return -1;
 	}
 	/* write & erase status 레지스터의 64-bit를 읽어옴*/
-	status_reg_value = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
+	status_reg_value = CTC_In(rgstr_vptr.wne_stat);
+	//status_reg_value = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
+	
 	/* 읽어온 write & erase status 레지스터의 64-bit에서 write data tag만 앞서 미리 만들어놓은 패킷으로 업데이트 함 */
-	Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, status_reg_value | writeData_tag);
+	CTC_Out(rgstr_vptr.wne_stat, status_reg_value | writeData_tag);
+	//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, status_reg_value | writeData_tag);
+	
 	/* 8KB용량(==1page) 만큼 write data를 보낼 때 까지 반복*/
 	for(int j=0; j<514; j++){
 		/* write upper buffer에 있는 64-bit값을 보냄*/
-		Xil_Out64(C2C_WRITE_DATA_UPPER_ADDR, *pWriteBuf_upper);
+		CTC_Out(rgstr_vptr.write_data_u, *pWriteBuf_upper);
+		//Xil_Out64(C2C_WRITE_DATA_UPPER_ADDR, *pWriteBuf_upper);
+		
 		/* write lower buffer에 있는 64-bit값을 보냄*/
-		Xil_Out64(C2C_WRITE_DATA_LOWER_ADDR, *pWriteBuf_lower);
+		CTC_Out(rgstr_vptr.write_data_l, *pWriteBuf_lower);
+		//Xil_Out64(C2C_WRITE_DATA_LOWER_ADDR, *pWriteBuf_lower);
+		
 		(*pWriteBuf_upper) += 1;//making write data for test
 		(*pWriteBuf_lower) += 1;//making write data for test
 	}
 	/* write 데이터를 다 보내고 나면*/
 	/* write & erase status 레지스터의 write tag 값만 0으로 바꿈*/
-	Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, status_reg_value & (~writeData_tag));
+	CTC_Out(rgstr_vptr.wne_stat, status_reg_value & (~writeData_tag));
+	//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, status_reg_value & (~writeData_tag));
+	
 	/* ack 신호가 나올 때 까지 기다리고 나오면 ack 값을 받아옴*/
 	if(wait_flash_operation(op, tag, 0, &ack, &ack_tag)!=0){
 		printf("Error: wait ack time out\r\n");
@@ -265,7 +380,9 @@ int erase_block(u64 bus, u64 chip, u64 block){
 		return -1;
 	}
 	/* command 입력*/
-	Xil_Out64(C2C_CMD_ADDR, command);
+	CTC_Out(rgstr_vptr.cmd, command);
+	//Xil_Out64(C2C_CMD_ADDR, command);
+	
 	/* ack 신호가 나올 때 까지 기다리고 나오면 ack 값을 받아옴*/
 	if(wait_flash_operation(op, tag, 0, &ack, &ack_tag)!=0){
 		printf("Error: wait ack time out\r\n");
@@ -285,7 +402,8 @@ int erase_block(u64 bus, u64 chip, u64 block){
 int wait_cmd_ready(void){
 	int time_cnt = MAX_CMD_RDY_WAIT_CNT;
 	/* command 레지스터에서 64-bit를 읽어 온 뒤 command ready 값만 취했을 때 command ready 값이 0이면 반복*/
-	while((Xil_In64(C2C_CMD_ADDR) & CMD_READY_MASK) == 0){
+	while((CTC_In(rgstr_vptr.cmd) & CMD_READY_MASK) == 0){
+	//while((Xil_In64(C2C_CMD_ADDR) & CMD_READY_MASK) == 0){
 		if(time_cnt == 0)
 			return -1;
 		time_cnt--;
@@ -296,7 +414,8 @@ int wait_cmd_ready(void){
 int wait_wrData_ready(void){
 	int time_cnt = MAX_WR_DATA_READY_CNT;
 	/* command 레지스터에서 64-bit를 읽어 온 뒤 write data ready 값만 취했을 때 write data ready 값이 0이면 반복*/
-	while((Xil_In64(C2C_CMD_ADDR) & WR_DATA_READY_MASK) == 0){
+	while((CTC_In(rgstr_vptr.cmd) & WR_DATA_READY_MASK) == 0){
+	//while((Xil_In64(C2C_CMD_ADDR) & WR_DATA_READY_MASK) == 0){
 		if(time_cnt == 0)
 			return -1;
 		time_cnt--;
@@ -312,11 +431,16 @@ int wait_writeData_req(u64* requested_tag){
 
 	while(time_cnt-- != 0){
 		/* write & erase register에 현재 쓰여있는 값 64-bit 읽어옴*/
-		wr_er_status = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
+		wr_er_status = CTC_In(rgstr_vptr.wne_stat);
+		//wr_er_status = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
+		
 		/* write & erase register에 현재 쓰여있는 값 64-bit 에서 write data request ready 신호만 가져옴*/
 		wr_dataReq_ready = wr_er_status & WR_DATA_REQ_READY_MASK;
+		//wr_dataReq_ready = wr_er_status & WR_DATA_REQ_READY_MASK;
+		
 		/* write & erase register에 현재 쓰여있는 값 64-bit 에서 write data request tag만 가져옴*/
 		wr_dataReq_tag = (wr_er_status & WR_DATA_REQ_TAG_MASK)>>WR_DATA_REQ_TAG_BIT;
+		
 		/* if write data request ready가 0이 아니면 if문 들어가고 break*/
 		if(wr_dataReq_ready > 0){
 			/* write & erase register에 write data request valid bit만 1로 만듦*/
@@ -348,9 +472,12 @@ int wait_flash_operation(u64 op, u64 tag, int* Qnumber, int* ack,int* ack_tag){
 		/*타임 카운트 값==0 이면 반복문 break*/
 		while(time_cnt-- != 0){
 			/* read queue ready 신호를 가져옴 (ready7, ready6, ready5, ..., ready0) */
-			readQ_ready = Xil_In64(C2C_READ_STATUS_ADDR) & READQ_READY_MASK;
+			readQ_ready = CTC_In(rgstr_vptr.read_stat) & READQ_READY_MASK;
+			//readQ_ready = Xil_In64(C2C_READ_STATUS_ADDR) & READQ_READY_MASK;
+			
 			/* read queue에 저장된 data에 해당하는 tag를 가져옴 */
-			readQ_tag = Xil_In64(C2C_READ_STATUS_ADDR) & READQ_TAG_MASK;
+			readQ_tag = CTC_In(rgstr_vptr.read_stat) & READQ_TAG_MASK;
+			//readQ_tag = Xil_In64(C2C_READ_STATUS_ADDR) & READQ_TAG_MASK;
 
 			if((readQ_ready&READ_DATA0_READY_VALUE)>0) // if read queue0의 ready 신호가 1일 때
 				if((readQ_tag & READ_DATA0_TAG_MASK) == (tag<<READ_DATA0_TAG_BIT)) { // and if queue0가 가지고있는 데이터의 tag가 보냈던 명령의 tag와 일치하면
@@ -406,13 +533,16 @@ int wait_flash_operation(u64 op, u64 tag, int* Qnumber, int* ack,int* ack_tag){
 		/*타임 카운트 값==0 이면 반복문 break*/
 		while(time_cnt-- != 0){
 			/* write & erase status 레지스터의 64-bit 모두 읽어옴 */
-			wr_er_status = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
+			wr_er_status = CTC_In(rgstr_vptr.wne_stat);
+			//wr_er_status = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
 			/* write & erase status 레지스터값에서 ack ready 신호만 추출 */
 			ack_ready = wr_er_status & WR_ER_ACK_READY_MASK;
 
 			if(ack_ready > 0) {	//ack ready가 high 라면 if문 실행 -> while문 break
-				Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status|WR_ER_ACK_VALID); //write & erase status 레지스터의 ack valid 자리만 1로 만듦
-				Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status&(~WR_ER_ACK_VALID)); // write & erase status 레지스터의 ack valid 자리만 0으로 만듦
+				CTC_Out(rgstr_vptr.wne_stat, wr_er_status|WR_ER_ACK_VALID);
+				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status|WR_ER_ACK_VALID); //write & erase status 레지스터의 ack valid 자리만 1로 만듦
+				CTC_Out(rgstr_vptr.wne_stat, wr_er_status&(~WR_ER_ACK_VALID);
+				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status&(~WR_ER_ACK_VALID)); // write & erase status 레지스터의 ack valid 자리만 0으로 만듦
 				*ack = ((wr_er_status & ACK_CODE_MASK)>>ACK_BIT);  // 동작 종료 결과 2-bit 가져와서 포인터에 저장
 				*ack_tag = ((wr_er_status & ACK_TAG_MASK)>>ACK_TAG_BIT); //ack에 포함된 tag를 가져와서 포인터에 저장
 				break;

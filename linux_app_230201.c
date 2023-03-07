@@ -26,7 +26,7 @@ int main()
 
    printf("program start\r\n");
 
-   if((fd_cmdStat = open("/dev/mem", O_RDWR | O_SYNC)) != -1){
+   if((fd_cmdStat = open("/dev/mem", O_RDWR | O_SYNC)) != -1){//"open" the memory device
 	  printf("fd_cmdStat: file open success\r\n");
 	  cmdStat_reg_vptr = (u64 *)mmap(NULL, cmdStat_reg_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd_cmdStat, cmdStat_reg_pbase);
 	  printf("cmdStat_reg mmap finished\r\n");
@@ -45,7 +45,7 @@ int main()
 
    printf("\r\nstart bram mmap\r\n");
 
-   if ((fd_timeResult_BRAM = open("/dev/mem", O_RDWR | O_SYNC)) != -1) {
+   if ((fd_timeResult_BRAM = open("/dev/mem", O_RDWR | O_SYNC)) != -1) {//"open" the memory device
 	  printf("fd_timeResult_BRAM: file open success\r\n");
 
       bram64_vptr = (u64 *)mmap(NULL, bram_size, PROT_READ|PROT_WRITE, MAP_SHARED, fd_timeResult_BRAM, bram_pbase);
