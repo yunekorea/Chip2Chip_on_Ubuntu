@@ -7,10 +7,10 @@ int main(void){
 	u64 writeBuf_lower_arr[520];*/
 	u64 wireData_upper = 0;
 	u64 wireData_lower = 100;
-	u64 bus =0;
-	u64 chip =0;
-	u64 block =1;
-	u64 page =4;
+	u64 bus = 0;
+	u64 chip = 0;
+	u64 block = 1;
+	u64 page = 4;
 
 	printf("initialization phase : ");
 	if(c2c_init() == -1)
@@ -27,7 +27,7 @@ int main(void){
 	printf("first: read page start\r\n");
 	if(read_page(bus, chip, block, page, readData_upper_arr, readData_lower_arr) != 0)
 		printf("Error: read_page function return -1\r\n");
-	for(int j=0; j<514; j++){
+	for(int j = 0; j < 514; j++){
 		printf("[line %d] upper data: 0x%08x, ", j, (int)readData_upper_arr[j]);
 		printf("lower data: 0x%08x\r\n ", (int)readData_lower_arr[j]);
 	}
@@ -44,7 +44,7 @@ int main(void){
 	printf("read page start\r\n");
 	if(read_page(bus, chip, block, page, readData_upper_arr, readData_lower_arr) != 0)
 		printf("Error: read_page function return -1\r\n");
-	for(int j=0; j<514; j++){
+	for(int j = 0; j < 514; j++){
 		printf("[line %d] upper data: 0x%08x, ", j, (int)readData_upper_arr[j]);
 		printf("lower data: 0x%08x\r\n ", (int)readData_lower_arr[j]);
 	}
@@ -59,7 +59,7 @@ int main(void){
 	printf("read page start\r\n");
 	if(read_page(bus, chip, block, page, readData_upper_arr, readData_lower_arr) != 0)
 		printf("Error: read_page function return -1\r\n");
-	for(int j=0; j<514; j++){
+	for(int j = 0; j < 514; j++){
 		printf("[line %d] upper data: 0x%08x, ", j, (int)readData_upper_arr[j]);
 		printf("lower data: 0x%08x\r\n ", (int)readData_lower_arr[j]);
 	}
@@ -71,11 +71,18 @@ int main(void){
 	printf("read page start\r\n");
 	if(read_page(bus, chip, block, page, readData_upper_arr, readData_lower_arr) != 0)
 		printf("Error: read_page function return -1\r\n");
-	for(int j=0; j<514; j++){
+	for(int j = 0; j < 514; j++){
 		printf("[line %d] upper data: 0x%08x, ", j, (int)readData_upper_arr[j]);
 		printf("lower data: 0x%08x\r\n ", (int)readData_lower_arr[j]);
 	}
 	printf("\r\n\r\n");
+	
+	printf("termination process : ");
+	if(c2c_terminate())
+		return printf("done\n");
+	else
+		return printf("failed\n");
+		
 }
 
 
