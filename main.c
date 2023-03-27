@@ -78,7 +78,7 @@ int main(void){
 	printf("\r\n\r\n");
 	
 	printf("termination process : ");
-	if(c2c_terminate())
+	if(c2c_terminate() == 0)
 		return printf("done\n");
 	else
 		return printf("failed\n");
