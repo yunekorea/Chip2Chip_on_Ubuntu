@@ -4,3 +4,6 @@ CXX = g++
 
 all:
 	$(CC) -o $@ $^
+
+clean:
+	rm *.o *.out
