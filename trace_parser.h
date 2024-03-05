@@ -2,10 +2,8 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "types.h"
 
-typedef unsigned long long u64;
-typedef unsigned long u32;
-typedef char u8;
 
 struct _IO_FILE;
 typedef struct _IO_FILE FILE;

@@ -12,13 +12,6 @@ int main(void){
 	u64 block = 1;
 	u64 page = 4;
 
-	printf("initialization phase : ");
-	if(c2c_init() == -1)
-		return(printf("failed\n"));
-	else
-		printf("done\n");
-
-	printf("program start \r\n\r\n");
 ///////////////////////////////////////////////////
 	/*for(int j=0; j<514; j++){
 		writeBuf_upper_arr[j] = j;
@@ -78,13 +71,10 @@ int main(void){
 	}
 	printf("\r\n\r\n");
 */	
-	printf("termination process : ");
-	if(c2c_terminate() == 0)
-		return printf("done\n");
-	else
-		return printf("failed\n");
-		
+
 }
+
+int  fd_memory;
 
 void vptr_mmap(u64** vptr, off_t addr) { //Mapping registers to the host's memory
 	return (*vptr = (u64 *)mmap(NULL, REG_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd_memory, addr));
@@ -266,8 +256,8 @@ int write_page(u64 bus, u64 chip, u64 block, u64 page, /*cosnt*/ u64* pWriteBuf_
 		
 		CTC_Out(rgstr_vptr.write_data_l, *pWriteBuf_lower);
 		
-		(*pWriteBuf_upper) += 1;//making write data for test
-		(*pWriteBuf_lower) += 1;//making write data for test
+		(*pWriteBuf_upper) += 1;//making write data for testing
+		(*pWriteBuf_lower) += 1;//making write data for testing
 	}
 	CTC_Out(rgstr_vptr.wne_stat, status_reg_value & (~writeData_tag));
 	

@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include <pthread.h>
+#include "types.h"
 
 /* register address*/
 #define C2C_BASE_ADDR 				0xa0000000
@@ -135,9 +135,7 @@
 
 #define REG_SIZE			0xA8
 
-int fd_memory;		//File descriptor of the memory device
-
-typedef unsigned long long u64;
+//int fd_memory;		//File descriptor of the memory device
 
 struct _rgstr_vptr {
 	u64 *cmd;		//Command register
