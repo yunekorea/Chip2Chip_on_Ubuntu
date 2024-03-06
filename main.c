@@ -1,23 +1,44 @@
 #include "main.h"
 
+int initialization(void)
+{
+  printf("Initialization phase : ");
+  if(c2c_init() == -1)
+    return -1;
+  else
+    return 0;
+}
+
+int termination(void)
+{
+  printf("Termination phase : ");
+  if(c2c_terminate() == -1)
+    return -1;
+  else
+    return 0;
+}
+
 int main()
 {
   u64 readData_upper[520] = {0,};
   u64 readData_lower[520] = {0,};
   u64 writeData_upper[520] = {0,};
   u64 writeData_lower[520] = {0,};
+  Trace *trace;
   
   printf("Chip2Chip HILS test\n");
-  printf("Initialization phase : ");
-  if(c2c_init() == -1)
-    return(printf("failed\n"));
+  if(initialization() == -1)
+    return(printf("Initialzation phase failed.\nAborting.\n"));
   else
-    printf("success\n");
+    printf("Initialization phase success.\n");
+ 
+  if(tracefile_open(trace) == -1)
+    return(printf("Failed to open the tracefile.\nAborting\n"));
+
   
-  
-  printf("Termination phase : ");
-  if(c2c_terminate() == -1)
-    return printf("failed\n");
+
+  if(termination() == -1)
+    return(printf("Termination phase failed.\n"));
   else
-    printf("success\n");
+    return(printf("Termination phase success.\n"));
 }

@@ -423,27 +423,21 @@ int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag){
 
 	else if((op == WRITE)||(op == ERASE)){
 		if(op == WRITE)
-			/*Å¸ÀÓ Ä«¿îÆ® °ªÀ» ¹Ì¸® define ÇØ³õÀº write µ¿ÀÛÀÇ ÃÖ´ë ½Ã°£ °ªÀ¸·Î ¾÷µ¥ÀÌÆ®*/
 			time_cnt = MAX_WRITE_STATUS_WAIT_CNT;
 		else if(op == ERASE)
-			/*Å¸ÀÓ Ä«¿îÆ® °ªÀ» ¹Ì¸® define ÇØ³õÀº erase µ¿ÀÛÀÇ ÃÖ´ë ½Ã°£ °ªÀ¸·Î ¾÷µ¥ÀÌÆ®*/
 			time_cnt = MAX_ERASE_STATUS_WAIT_CNT;
-		/*loop¸¦ ¹Ýº¹ÇÒ ¶§ ¸¶´Ù Å¸ÀÓ Ä«¿îÆ® °ªÀ» °¨¼Ò*/
-		/*Å¸ÀÓ Ä«¿îÆ® °ª==0 ÀÌ¸é ¹Ýº¹¹® break*/
 		while(time_cnt-- != 0){
-			/* write & erase status ·¹Áö½ºÅÍÀÇ 64-bit ¸ðµÎ ÀÐ¾î¿È */
 			wr_er_status = CTC_In(rgstr_vptr.wne_stat);
 			//wr_er_status = Xil_In64(C2C_WRITE_ERASE_STATUS_ADDR);
-			/* write & erase status ·¹Áö½ºÅÍ°ª¿¡¼­ ack ready ½ÅÈ£¸¸ ÃßÃâ */
 			ack_ready = wr_er_status & WR_ER_ACK_READY_MASK;
 
-			if(ack_ready > 0) {	//ack ready°¡ high ¶ó¸é if¹® ½ÇÇà -> while¹® break
+			if(ack_ready > 0) {
 				CTC_Out(rgstr_vptr.wne_stat, wr_er_status|WR_ER_ACK_VALID);
-				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status|WR_ER_ACK_VALID); //write & erase status ·¹Áö½ºÅÍÀÇ ack valid ÀÚ¸®¸¸ 1·Î ¸¸µê
+				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status|WR_ER_ACK_VALID);
 				CTC_Out(rgstr_vptr.wne_stat, wr_er_status&(~WR_ER_ACK_VALID));
-				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status&(~WR_ER_ACK_VALID)); // write & erase status ·¹Áö½ºÅÍÀÇ ack valid ÀÚ¸®¸¸ 0À¸·Î ¸¸µê
-				*ack = ((wr_er_status & ACK_CODE_MASK)>>ACK_BIT);  // µ¿ÀÛ Á¾·á °á°ú 2-bit °¡Á®¿Í¼­ Æ÷ÀÎÅÍ¿¡ ÀúÀå
-				*ack_tag = ((wr_er_status & ACK_TAG_MASK)>>ACK_TAG_BIT); //ack¿¡ Æ÷ÇÔµÈ tag¸¦ °¡Á®¿Í¼­ Æ÷ÀÎÅÍ¿¡ ÀúÀå
+				//Xil_Out64(C2C_WRITE_ERASE_STATUS_ADDR, wr_er_status&(~WR_ER_ACK_VALID)); 
+				*ack = ((wr_er_status & ACK_CODE_MASK)>>ACK_BIT); 
+				*ack_tag = ((wr_er_status & ACK_TAG_MASK)>>ACK_TAG_BIT);
 				break;
 			}
 		}// end while

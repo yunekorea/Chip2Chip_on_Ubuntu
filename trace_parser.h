@@ -14,6 +14,8 @@ typedef struct _Request {
   u32 offset;
   u32 size;
   u8 operation;
+  u8 tag;
+  struct _Request *next_request;
 }Request;
 
 typedef struct _Trace {
@@ -22,6 +24,6 @@ typedef struct _Trace {
 } Trace;
 
 
-Trace get_filename(void);
+int tracefile_open(Trace *trace);
 int get_trace(Trace *trace, Request *request);
 
