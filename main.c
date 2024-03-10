@@ -35,6 +35,11 @@ int main()
   get_trace(trace, req);
   allocate_tag(req);
   generate_command(req);
+  send_command(req);
+
+  receive_result(req);
+
+  save_result(req);
 
   if(termination() == -1)
     return(printf("Termination phase failed.\n"));
