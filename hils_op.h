@@ -11,8 +11,9 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include "types.h"
+#include "trace_parser.h"
 
-/* register address*/
+/* register address */
 
 #define HILS_BASE_ADDR  0xa0080000
 #define TS_OFFSET       0x00
@@ -25,31 +26,38 @@
 #define HILS_RESULT_ADDR    HILS_BASE_ADDR + RESULT_OFFSET
 #define HILS_CHIP_RES_ADDR  HILS_BASE_ADDR + CHIP_RES_OFFSET
 
-/* command*/
-#define ACCESS_KEY 				0x1E5A
-#define READ 					0x3
-#define WRITE 					0x4
-#define ERASE 					0x5
-#define TAG_BIT 				33
-#define KEY_BIT 				42
-#define OP_BIT 					30
-#define BUS_BIT 				27
-#define CHIP_BIT 				24
-#define BLOCK_BIT 				8
-#define PAGE_BIT 				0
-#define CMD_READY_BIT 			40
+/* command */
+#define CMD_ACCESS_KEY 			0x1E5A
+#define CMD_OP_READ 				0x3
+#define CMD_OP_WRITE 				0x4
+#define CMD_OP_ERASE 				0x5
+#define CMD_KEY_BIT 				43
+#define CMD_ACK_BIT         42
+#define CMD_READY_BIT 			41
+#define CMD_START_BIT       40
+#define CMD_TAG_BIT 				33
+#define CMD_OP_BIT 					30
+#define CMD_BUS_BIT 				27
+#define CMD_CHIP_BIT 			  24
+#define CMD_BLOCK_BIT 		  8
+#define CMD_PAGE_BIT 				0
 #define CMD_READY_MASK 			0x0000010000000000
 
+/* result time */
+#define RES_ACK 48
+#define RES_RDY 47
+#define RES_TAG 40
+
 /* acknowledge*/
-#define ACK_ERASE_ERR 			0
-#define ACK_ERASE_DONE 			1
-#define ACK_WRITE_DONE 			2
-#define ACK_BIT 				9
-#define ACK_TAG_BIT 			11
-#define ACK_CODE_MASK 			0x0000000000000600
-#define ACK_TAG_MASK 			0x000000000003f800
+#define ACK_ERASE_ERR 			  0
+#define ACK_ERASE_DONE 			  1
+#define ACK_WRITE_DONE 			  2
+#define ACK_BIT 				      9
+#define ACK_TAG_BIT 			    11
+#define ACK_CODE_MASK 			  0x0000000000000600
+#define ACK_TAG_MASK 			    0x000000000003f800
 #define WR_ER_ACK_READY_MASK 	0x0000000000040000
-#define WR_ER_ACK_VALID	 		0x0000000000080000
+#define WR_ER_ACK_VALID	 		  0x0000000000080000
 
 #define VALID 					1
 #define INVALID 				0
@@ -101,21 +109,14 @@
 
 #define REG_SIZE			0xA8
 
-//int fd_memory;		//File descriptor of the memory device
-
-struct _rgstr_vptr {
-	u64 *timestamp;		//Command register
-	u64 *cmd;		//Read status register
-	u64 *result_time;	//Read data upper register
-	u64 *chip_res_time;	//Read data lower register
-} rgstr_vptr;
-
-void vptr_mmap(u64** vptr, off_t addr); //Mapping registers to the host's memory
-void rgstr_offset_map(u64** vptr, u64 offset);
+int vptr_mmap(u64** vptr, off_t addr); //Mapping registers to the host's memory
+int rgstr_offset_map(u64** vptr, u64 offset);
 int c2c_init(void);	//opening memory device as a file descriptor to use them with mmap/msync
 int c2c_terminate(void);
-void CTC_Out(u64* vptr, u64 command);
+void CTC_Out(u64* vptr, u64 data);
 u64 CTC_In(u64* vptr);
+u64 allocate_tag(Request *request);
+u64 generate_command(Request *request);
 
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower);
 int write_page(u64 bus, u64 chip, u64 block, u64 page, u64* pWriteBuf_upper, u64* pWriteBuf_lower);

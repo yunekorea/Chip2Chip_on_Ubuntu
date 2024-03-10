@@ -15,17 +15,16 @@ int get_trace(Trace *trace, Request *request)
 {
   static char buffer[200];
   u64 timestamp;
-  u32 lpn, offset, size;
+  u32 ppn, offset, size;
   u8 ope;
   if(feof(trace->trfile))
     return -1;
   
   fgets(buffer, 200, trace->trfile);
-  sscanf(buffer, "%lld %d %d %d %d", &timestamp, &lpn, &offset, &size, &ope);
+  sscanf(buffer, "%lld %d %d %d", &timestamp, &ppn, &size, &ope);
   request = malloc(sizeof(Request));
   request->timestamp = timestamp;
-  request->lpn = lpn;
-  request->offset = offset;
+  request->ppn = ppn;
   request->size = size;
   request->operation = ope;
   request->next_request = NULL;

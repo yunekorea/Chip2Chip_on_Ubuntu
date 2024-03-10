@@ -74,13 +74,23 @@ int main(void){
 
 }
 
-int  fd_memory;
+int  fd_memory;   //File descriptor of the memory device
 
-void vptr_mmap(u64** vptr, off_t addr) { //Mapping registers to the host's memory
-	return (*vptr = (u64 *)mmap(NULL, REG_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd_memory, addr));
+struct _rgstr_vptr {
+	u64 *timestamp;		//Command register
+	u64 *cmd;		//Read status register
+	u64 *result_time;	//Read data upper register
+	u64 *chip_res_time;	//Read data lower register
+} rgstr_vptr;
+
+int vptr_mmap(u64** vptr, off_t addr) { //Mapping registers to the host's memory
+	if(*vptr = (u64 *)mmap(NULL, REG_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd_memory, addr))
+    return 0;
+  else
+    return -1;
 }
 
-void rgstr_offset_map(u64** vptr, u64 offset) {
+int rgstr_offset_map(u64** vptr, u64 offset) {
 	*vptr = rgstr_vptr.cmd + offset/sizeof(u64*);
 }
 
@@ -103,8 +113,8 @@ int c2c_terminate(void) {
   return close(fd_memory);
 }
 
-void CTC_Out(u64* vptr, u64 command) {
-	*vptr = command;
+void CTC_Out(u64* vptr, u64 data) {
+	*vptr = data;
 	msync(vptr, REG_SIZE, MS_SYNC);
 }
 
@@ -112,6 +122,22 @@ u64 CTC_In(u64* vptr) {
 	return *vptr;
 }
 
+u64 generate_command(Request *request) {
+
+  u64 key = CMD_ACCESS_KEY;
+  u64 tag = request->tag;
+  u8 operation = request->operation;
+  u64 command;
+  command = (key << CMD_KEY_BIT)      \
+          | (tag << CMD_TAG_BIT)      \
+          | (op << CMD_OP_BIT)        \
+          | (bus << CMD_BUS_BIT)      \
+          | (chip << CMD_CHIP_BIT)    \
+          | (block << CMD_BLOCK_BIT)  \
+          | (page << CMD_PAGE_BIT);
+
+  return command;
+}
 
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower){
 	u64 key = ACCESS_KEY;
