@@ -13,54 +13,20 @@
 #include "types.h"
 
 /* register address*/
-#define C2C_BASE_ADDR 				0xa0000000
-#define READQ_ADDR_INTERVAL			0x10
-#define CMD_OFFSET 					0x00
-#define READ_STATUS_OFFSET 			0x10
-#define READ_DATA0_UPPER_OFFSET 	0x20
-#define READ_DATA0_LOWER_OFFSET 	0x28
-#define READ_DATA1_UPPER_OFFSET 	0x30
-#define READ_DATA1_LOWER_OFFSET 	0x38
-#define READ_DATA2_UPPER_OFFSET 	0x40
-#define READ_DATA2_LOWER_OFFSET 	0x48
-#define READ_DATA3_UPPER_OFFSET 	0x50
-#define READ_DATA3_LOWER_OFFSET 	0x58
-#define READ_DATA4_UPPER_OFFSET 	0x60
-#define READ_DATA4_LOWER_OFFSET 	0x68
-#define READ_DATA5_UPPER_OFFSET 	0x70
-#define READ_DATA5_LOWER_OFFSET 	0x78
-#define READ_DATA6_UPPER_OFFSET 	0x80
-#define READ_DATA6_LOWER_OFFSET 	0x88
-#define READ_DATA7_UPPER_OFFSET 	0x90
-#define READ_DATA7_LOWER_OFFSET 	0x98
-#define WRITE_ERASE_STATUS_OFFSET 	0xa0
-#define WRITE_DATA_UPPER_OFFSET 	0xb0
-#define WRITE_DATA_LOWER_OFFSET 	0xb8
 
-#define C2C_CMD_ADDR 				C2C_BASE_ADDR + CMD_OFFSET					//reg0
-#define C2C_READ_STATUS_ADDR 		C2C_BASE_ADDR + READ_STATUS_OFFSET			//reg2
-#define C2C_READ_DATA0_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA0_UPPER_OFFSET		//reg4
-#define C2C_READ_DATA0_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA0_LOWER_OFFSET		//reg5
-#define C2C_READ_DATA1_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA1_UPPER_OFFSET		//reg6
-#define C2C_READ_DATA1_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA1_LOWER_OFFSET		//reg7
-#define C2C_READ_DATA2_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA2_UPPER_OFFSET		//reg8
-#define C2C_READ_DATA2_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA2_LOWER_OFFSET		//reg9
-#define C2C_READ_DATA3_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA3_UPPER_OFFSET		//reg10
-#define C2C_READ_DATA3_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA3_LOWER_OFFSET		//reg11
-#define C2C_READ_DATA4_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA4_UPPER_OFFSET		//reg12
-#define C2C_READ_DATA4_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA4_LOWER_OFFSET		//reg13
-#define C2C_READ_DATA5_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA5_UPPER_OFFSET		//reg14
-#define C2C_READ_DATA5_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA5_LOWER_OFFSET		//reg15
-#define C2C_READ_DATA6_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA6_UPPER_OFFSET		//reg16
-#define C2C_READ_DATA6_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA6_LOWER_OFFSET		//reg17
-#define C2C_READ_DATA7_UPPER_ADDR	C2C_BASE_ADDR + READ_DATA7_UPPER_OFFSET		//reg18
-#define C2C_READ_DATA7_LOWER_ADDR 	C2C_BASE_ADDR + READ_DATA7_LOWER_OFFSET		//reg19
-#define C2C_WRITE_ERASE_STATUS_ADDR C2C_BASE_ADDR + WRITE_ERASE_STATUS_OFFSET	//reg20
-#define C2C_WRITE_DATA_UPPER_ADDR	C2C_BASE_ADDR + WRITE_DATA_UPPER_OFFSET		//reg22
-#define C2C_WRITE_DATA_LOWER_ADDR 	C2C_BASE_ADDR + WRITE_DATA_LOWER_OFFSET		//reg23
+#define HILS_BASE_ADDR  0xa0080000
+#define TS_OFFSET       0x00
+#define CMD_OFFSET      0x08
+#define RESULT_OFFSET   0x10
+#define CHIP_RES_OFFSET 0x18
+
+#define HILS_TS_ADDR        HILS_BASE_ADDR + TS_OFFSET
+#define HILS_CMD_ADDR       HILS_BASE_ADDR + CMD_OFFSET
+#define HILS_RESULT_ADDR    HILS_BASE_ADDR + RESULT_OFFSET
+#define HILS_CHIP_RES_ADDR  HILS_BASE_ADDR + CHIP_RES_OFFSET
 
 /* command*/
-#define ACCESS_KEY 				0x1E5A53
+#define ACCESS_KEY 				0x1E5A
 #define READ 					0x3
 #define WRITE 					0x4
 #define ERASE 					0x5
@@ -138,28 +104,10 @@
 //int fd_memory;		//File descriptor of the memory device
 
 struct _rgstr_vptr {
-	u64 *cmd;		//Command register
-	u64 *read_stat;		//Read status register
-	u64 *read_data_0u;	//Read data upper register
-	u64 *read_data_0l;	//Read data lower register
-	u64 *read_data_1u;
-	u64 *read_data_1l;
-	u64 *read_data_2u;
-	u64 *read_data_2l;
-	u64 *read_data_3u;
-	u64 *read_data_3l;
-	u64 *read_data_4u;
-	u64 *read_data_4l;
-	u64 *read_data_5u;
-	u64 *read_data_5l;
-	u64 *read_data_6u;
-	u64 *read_data_6l;
-	u64 *read_data_7u;
-	u64 *read_data_7l;
-	u64 *wne_stat;		//Write and erase status register
-
-	u64 *write_data_u;	//Write data upper register
-	u64 *write_data_l;	//Write data lower register
+	u64 *timestamp;		//Command register
+	u64 *cmd;		//Read status register
+	u64 *result_time;	//Read data upper register
+	u64 *chip_res_time;	//Read data lower register
 } rgstr_vptr;
 
 void vptr_mmap(u64** vptr, off_t addr); //Mapping registers to the host's memory
@@ -168,8 +116,6 @@ int c2c_init(void);	//opening memory device as a file descriptor to use them wit
 int c2c_terminate(void);
 void CTC_Out(u64* vptr, u64 command);
 u64 CTC_In(u64* vptr);
-u64 CTC_Readq_In_Upper(u64 Qnumber);
-u64 CTC_Readq_In_Lower(u64 Qnumber);
 
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower);
 int write_page(u64 bus, u64 chip, u64 block, u64 page, u64* pWriteBuf_upper, u64* pWriteBuf_lower);

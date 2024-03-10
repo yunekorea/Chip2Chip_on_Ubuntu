@@ -20,10 +20,6 @@ int termination(void)
 
 int main()
 {
-  u64 readData_upper[520] = {0,};
-  u64 readData_lower[520] = {0,};
-  u64 writeData_upper[520] = {0,};
-  u64 writeData_lower[520] = {0,};
   Trace *trace;
   
   printf("Chip2Chip HILS test\n");

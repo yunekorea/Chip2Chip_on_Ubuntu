@@ -88,32 +88,12 @@ int c2c_init(void) {	//opening memory device as a file descriptor to use them wi
 	
 	if((fd_memory = open("/dev/mem", O_RDWR | O_SYNC)) != -1) { //"open" the memory device
 		//assign vptr with mmap function
-		
-		vptr_mmap(&rgstr_vptr.cmd, C2C_CMD_ADDR);
-		
-		rgstr_offset_map(&rgstr_vptr.read_stat, READ_STATUS_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_0u, READ_DATA0_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_0l, READ_DATA0_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_1u, READ_DATA1_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_1l, READ_DATA1_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_2u, READ_DATA2_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_2l, READ_DATA2_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_3u, READ_DATA3_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_3l, READ_DATA3_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_4u, READ_DATA4_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_4l, READ_DATA4_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_5u, READ_DATA5_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_5l, READ_DATA5_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_6u, READ_DATA6_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_6l, READ_DATA6_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_7u, READ_DATA7_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.read_data_7l, READ_DATA7_LOWER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.wne_stat, WRITE_ERASE_STATUS_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.write_data_u, WRITE_DATA_UPPER_OFFSET);
-		rgstr_offset_map(&rgstr_vptr.write_data_l, WRITE_DATA_LOWER_OFFSET);
+		vptr_mmap(&rgstr_vptr.timestamp, HILS_TS_ADDR);
 
+		rgstr_offset_map(&rgstr_vptr.cmd, HILS_CMD_ADDR);
+		rgstr_offset_map(&rgstr_vptr.result_time, HILS_RESULT_ADDR);
+		rgstr_offset_map(&rgstr_vptr.chip_res_time, HILS_CHIP_RES_ADDR);
 		return 0;
-		
 	} else {
 		return -1;
 	}
@@ -132,47 +112,6 @@ u64 CTC_In(u64* vptr) {
 	return *vptr;
 }
 
-u64 CTC_Readq_In_Upper(u64 Qnumber) {
-	switch(Qnumber) {
-		case 0:
-			return CTC_In(rgstr_vptr.read_data_0u);
-		case 1:
-			return CTC_In(rgstr_vptr.read_data_1u);
-		case 2:
-			return CTC_In(rgstr_vptr.read_data_2u);
-		case 3:
-			return CTC_In(rgstr_vptr.read_data_3u);
-		case 4:
-			return CTC_In(rgstr_vptr.read_data_4u);
-		case 5:
-			return CTC_In(rgstr_vptr.read_data_5u);
-		case 6:
-			return CTC_In(rgstr_vptr.read_data_6u);
-		case 7:
-			return CTC_In(rgstr_vptr.read_data_7u);
-	}
-}
-
-u64 CTC_Readq_In_Lower(u64 Qnumber) {
-	switch(Qnumber) {
-		case 0:
-			return CTC_In(rgstr_vptr.read_data_0l);
-		case 1:
-			return CTC_In(rgstr_vptr.read_data_1l);
-		case 2:
-			return CTC_In(rgstr_vptr.read_data_2l);
-		case 3:
-			return CTC_In(rgstr_vptr.read_data_3l);
-		case 4:
-			return CTC_In(rgstr_vptr.read_data_4l);
-		case 5:
-			return CTC_In(rgstr_vptr.read_data_5l);
-		case 6:
-			return CTC_In(rgstr_vptr.read_data_6l);
-		case 7:
-			return CTC_In(rgstr_vptr.read_data_7l);
-	}
-}
 
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower){
 	u64 key = ACCESS_KEY;
