@@ -32,9 +32,11 @@ int main()
   if(tracefile_open(trace) == -1)
     return(printf("Failed to open the tracefile.\nAborting\n"));
   */
-
+  
+  /*
   if(resultfile_open(res_file) == -1)
     return(printf("Failed to open the resultfile.\nAborting\n"));
+  */
 
   Request *req = malloc(sizeof(Request));
   //get_trace(trace, req);
