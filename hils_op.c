@@ -17,7 +17,7 @@ int vptr_mmap(u64** vptr, off_t addr) { //Mapping registers to the host's memory
 }
 
 int rgstr_offset_map(u64** vptr, u64 offset) {
-	*vptr = rgstr_vptr.cmd + offset/sizeof(u64*);
+	*vptr = rgstr_vptr.timestamp + offset/sizeof(u64*);
 }
 
 int c2c_init(void) {	//opening memory device as a file descriptor to use them with mmap/msync
