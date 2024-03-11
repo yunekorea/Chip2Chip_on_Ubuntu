@@ -4,8 +4,11 @@ CXX = g++
 
 all:main
 
-main: main.h hils_op.o result_process.o tag_mgmt.o trace_parser.o
-	cc $(CFLAGS) -g -o main main.o
+main: main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
+	gcc $(CFLAGS) -g -o main main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
+
+main.o: hils_op.h result_process.h tag_mgmt.h trace_parser.h
+	gcc $(CFLAGS) -c -g main.c
 
 hils_op.o: hils_op.h types.h
 	gcc $(CFLAGS) -c -g hils_op.c
