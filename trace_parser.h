@@ -5,6 +5,7 @@
 #include "types.h"
 
 #ifndef _TRACE_PARSER
+#define _TRACE_PARSER
 struct _IO_FILE;
 typedef struct _IO_FILE FILE;
 
