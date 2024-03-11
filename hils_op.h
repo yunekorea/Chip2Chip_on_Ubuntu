@@ -15,7 +15,7 @@
 #include "result_process.h"
 /* register address */
 
-#define HILS_BASE_ADDR  0xa0080000
+#define HILS_BASE_ADDR  0xa0000000
 #define TS_OFFSET       0x00
 #define CMD_OFFSET      0x08
 #define RESULT_OFFSET   0x10

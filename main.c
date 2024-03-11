@@ -44,8 +44,11 @@ int main()
   req->page = 0;
   req->operation = 1;
   allocate_tag(req);
+  printf("allocate C\n");
   generate_command(req);
+  printf("generate C\n");
   send_command(req);
+  printf("send cmd C\n");
 
   Op_result *res = malloc(sizeof(Op_result));
   u64 result_time;
