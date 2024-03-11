@@ -27,7 +27,7 @@
 #define HILS_CHIP_RES_ADDR  HILS_BASE_ADDR + CHIP_RES_OFFSET
 
 /* command */
-#define CMD_ACCESS_KEY 			0x1E5A
+#define CMD_ACCESS_KEY 			0x1E5ABC
 #define CMD_OP_READ 				0x3
 #define CMD_OP_WRITE 				0x4
 #define CMD_OP_ERASE 				0x5
