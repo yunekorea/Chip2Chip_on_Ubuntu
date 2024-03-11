@@ -11,8 +11,9 @@ int resultfile_open(FILE *res_file)
 }
 
 
-int save_result(FILE *res_file, Request *request) 
+int save_fined_to_file(FILE *res_file, Request *request) 
 {
   fprintf(res_file, "%x, %d, %d\n", request->command, request->timestamp, request->result_time);
+  free(request);
   return 0;
 }

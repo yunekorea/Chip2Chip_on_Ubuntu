@@ -123,7 +123,6 @@ int c2c_init(void);	//opening memory device as a file descriptor to use them wit
 int c2c_terminate(void);
 void CTC_Out(u64* vptr, u64 data);
 u64 CTC_In(u64* vptr);
-u64 allocate_tag(Request *request);
 u64 generate_command(Request *request);
 
 int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower);
@@ -138,4 +137,4 @@ int wait_writeData_req(u64* requested_tag);
 int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag);
 
 int send_command(Request *request);
-int receive_result(Request *request);
+int receive_result(Op_result *result);

@@ -104,7 +104,6 @@ int c2c_init(void) {	//opening memory device as a file descriptor to use them wi
 		rgstr_offset_map(&rgstr_vptr.result_time, HILS_RESULT_ADDR);
 		rgstr_offset_map(&rgstr_vptr.chip_res_time, HILS_CHIP_RES_ADDR);
 		return 0;
-	} else {
 		return -1;
 	}
 }
@@ -465,7 +464,7 @@ int send_command(Request *request)
   return 0;
 }
 
-int receive_result(Request *request)
+int receive_result(Op_result *result)
 {
   if(wait_result_ready(1) < 0) {
     printf("wait_result_ready timeout.\n");
@@ -484,5 +483,7 @@ int receive_result(Request *request)
   result_tag = (result_reg | RES_TAG_MASK) >> RES_TAG_BIT;
   result_time = (result_reg | RES_TIME_MASK);
   CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
+  result->tag = result_tag;
+  result->time_spent = result_time;
   return 0;
 }

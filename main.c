@@ -38,14 +38,21 @@ int main()
 
   Request *req = malloc(sizeof(Request));
   //get_trace(trace, req);
+  req->bus = 0;
+  req->chip = 0;
+  req->block = 0;
+  req->page = 0;
+  req->operation = 1;
   allocate_tag(req);
   generate_command(req);
   send_command(req);
 
   Op_result *res = malloc(sizeof(Op_result));
   u64 result_time;
-  result_time = receive_result(req);
-  save_result(res_file, req);
+  receive_result(res);
+  Request *fin_req = save_result_to_request(res);
+
+  
 
   fclose(trace->trfile);
   fclose(res_file);
