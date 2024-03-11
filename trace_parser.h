@@ -5,8 +5,6 @@
 #include "types.h"
 
 #ifndef _TRACE_PARSER
-struct _IO_FILE;
-typedef struct _IO_FILE FILE;
 
 typedef struct _Request {
   u64 timestamp;
@@ -14,6 +12,7 @@ typedef struct _Request {
   u32 size;
   u8 operation;
   u8 tag;
+  u64 command;
   struct _Request *next_request;
 }Request;
 
@@ -25,4 +24,4 @@ typedef struct _Trace {
 
 int tracefile_open(Trace *trace);
 int get_trace(Trace *trace, Request *request);
-
+int free_request(Request *request);

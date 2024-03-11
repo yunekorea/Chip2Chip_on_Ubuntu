@@ -127,19 +127,25 @@ u64 generate_command(Request *request) {
   u64 key = CMD_ACCESS_KEY;
   u64 tag = request->tag;
   u8 operation = request->operation;
+  u16 bus = request->bus;
+  u16 chip = request->chip;
+  u16 block = request->block;
+  u16 page = request->page;
   u64 command;
   command = (key << CMD_KEY_BIT)      \
           | (tag << CMD_TAG_BIT)      \
-          | (op << CMD_OP_BIT)        \
+          | (operation << CMD_OP_BIT) \
           | (bus << CMD_BUS_BIT)      \
           | (chip << CMD_CHIP_BIT)    \
           | (block << CMD_BLOCK_BIT)  \
-          | (page << CMD_PAGE_BIT);
+          | (page << CMD_PAGE_BIT)    \
+          | CMD_READY_MASK            \
+          | CMD_ACK_MASK;
 
   return command;
 }
 
-int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower){
+int read_page(u64 bus, u64 chip, u64 block,160 u64 page, u64* pReadBuf_upper, u64* pReadBuf_lower){
 	u64 key = ACCESS_KEY;
 	u64 tag = 0;
 	u64 op = READ;
@@ -284,6 +290,17 @@ int wait_cmd_ready(void){
 	return 0;
 }
 
+int wait_result_ready(void)
+{
+  int time_cnt = MAX_RESULT_RDY_WAIT_CNT;
+  while((CTC_In(rgstr_vptr.result_time) & RES_READY_MASK) == 0){
+    if(time_cnt == 0)
+      return -1;
+    time_cnt--;
+  }
+  return 0;
+}
+
 int wait_wrData_ready(void){
 	int time_cnt = MAX_WR_DATA_READY_CNT;
 	while((CTC_In(rgstr_vptr.cmd) & WR_DATA_READY_MASK) == 0){
@@ -412,4 +429,28 @@ int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag){
 		return -1;
 	else
 		return 0;
+}
+
+int send_command(Request *request)
+{
+  if(wait_cmd_ready() < 0) {
+    printf("wait_cmd_ready timeout.\n");
+    return -1;
+  }
+  CTC_Out(rgstr_vptr.cmd, request->command);
+  return 0;
+}
+
+int receive_result(Op_result *result)
+{
+  if(wait_result_ready() < 0) {
+    return -1;
+  }
+  u64 result_reg;
+  u64 result_time;
+  u16 result_tag;
+  result_reg = CTC_In(rgstr_vptr.result_time);
+  result_tag = (result_reg | RES_TAG_MASK) >> RES_TAG_BIT;
+  result_time = (result_reg | RES_TIME_MASK);
+  return 0;
 }
