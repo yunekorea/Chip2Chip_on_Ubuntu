@@ -2,10 +2,13 @@ CC = gcc
 AR = ar
 CXX = g++
 
+CFLAGS = \
+	-O0
+
 all:main
 
 main: main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
-	gcc $(CFLAGS) -g -o main main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
+	gcc $(CFLAGS) -g -o main.out main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
 
 main.o: hils_op.h result_process.h tag_mgmt.h trace_parser.h
 	gcc $(CFLAGS) -c -g main.c

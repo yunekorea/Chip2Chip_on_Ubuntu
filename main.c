@@ -39,6 +39,7 @@ int main()
   */
 
   Request *req = malloc(sizeof(Request));
+	printf("malloc C\n");
   //get_trace(trace, req);
   req->bus = 0;
   req->chip = 0;

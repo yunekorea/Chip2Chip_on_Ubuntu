@@ -5,7 +5,7 @@ Request *tags[128];
 int allocate_tag(Request *request)
 {
   static int tags_pointer = 0;
-  while(tags[tags_pointer] == NULL) {
+  while(tags[tags_pointer] != NULL) {
     tags_pointer++;
     if(tags_pointer > 127)
       tags_pointer = 0;
