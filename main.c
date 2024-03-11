@@ -37,7 +37,7 @@ int main()
     return(printf("Failed to open the resultfile.\nAborting\n"));
 
   Request *req = malloc(sizeof(Request));
-  get_trace(trace, req);
+  //get_trace(trace, req);
   allocate_tag(req);
   generate_command(req);
   send_command(req);
@@ -45,8 +45,7 @@ int main()
   Op_result *res = malloc(sizeof(Op_result));
   u64 result_time;
   result_time = receive_result(req);
-  save_result(req, res, result_time);
-  save_file(res_file, res);
+  save_result(res_file, req);
 
   fclose(trace->trfile);
   fclose(res_file);

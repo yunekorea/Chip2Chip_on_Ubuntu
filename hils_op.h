@@ -49,6 +49,7 @@
 #define RES_ACK_BIT         48
 #define RES_READY_BIT       47
 #define RES_TAG_BIT         40
+#define RES_ACK_MASK        ((u64)0x01 << RES_ACK_BIT)
 #define RES_READY_MASK      ((u64)0x01 << RES_READY_BIT)
 #define RES_TAG_MASK        ((u64)0x7F << RES_TAG_BIT))
 #define RES_TIME_MASK       (((u64)0x01 << RES_TAG_BIT) - 1)
@@ -129,13 +130,12 @@ int read_page(u64 bus, u64 chip, u64 block, u64 page, u64* pReadBuf_upper, u64* 
 int write_page(u64 bus, u64 chip, u64 block, u64 page, u64* pWriteBuf_upper, u64* pWriteBuf_lower);
 int erase_block(u64 bus, u64 chip, u64 block);
 
-
-int wait_cmd_ready(void);
-int wait_wrData_ready(void);
+int wait_cmd_ready(int value);
+int wait_wrData_ready(int value);
 
 int wait_result_ready(void);
 int wait_writeData_req(u64* requested_tag);
 int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag);
 
 int send_command(Request *request);
-int receive_result(Op_result *result);
+int receive_result(Request *request);

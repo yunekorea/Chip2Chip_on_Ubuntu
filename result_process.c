@@ -11,8 +11,8 @@ int resultfile_open(FILE *res_file)
 }
 
 
-int save_file(FILE *res_file, Op_result *res)
+int save_result(FILE *res_file, Request *request) 
 {
-  fprintf(res_file, "%x, %d, %d\n", res->command, res->timestamp, res->time_spent);
+  fprintf(res_file, "%x, %d, %d\n", request->command, request->timestamp, request->result_time);
   return 0;
 }

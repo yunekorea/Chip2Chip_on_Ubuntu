@@ -127,10 +127,10 @@ u64 generate_command(Request *request) {
   u64 key = CMD_ACCESS_KEY;
   u64 tag = request->tag;
   u8 operation = request->operation;
-  u16 bus = request->bus;
-  u16 chip = request->chip;
+  u8 bus = request->bus;
+  u8 chip = request->chip;
   u16 block = request->block;
-  u16 page = request->page;
+  u8 page = request->page;
   u64 command;
   command = (key << CMD_KEY_BIT)      \
           | (tag << CMD_TAG_BIT)      \
@@ -279,24 +279,42 @@ int erase_block(u64 bus, u64 chip, u64 block){
 	return 0;
 }
 
-int wait_cmd_ready(void){
+int wait_cmd_ready(int value){
 	int time_cnt = MAX_CMD_RDY_WAIT_CNT;
-	while((CTC_In(rgstr_vptr.cmd) & CMD_READY_MASK) == 0){
-	//while((Xil_In64(C2C_CMD_ADDR) & CMD_READY_MASK) == 0){
-		if(time_cnt == 0)
-			return -1;
-		time_cnt--;
-	}
+  if(value == 1) {
+	  while((CTC_In(rgstr_vptr.cmd) & CMD_READY_MASK) == 0){
+	  //while((Xil_In64(C2C_CMD_ADDR) & CMD_READY_MASK) == 0){
+		  if(time_cnt == 0)
+			  return -1;
+		  time_cnt--;
+	  }
+  }
+  else if(value == 0) {
+    while((CTC_In(rgstr_vptr.cmd) & CMD_READY_MASK) == 1) {
+      if(time_cnt == 0)
+        return -1;
+      time_cnt--;
+    }
+  }
 	return 0;
 }
 
-int wait_result_ready(void)
+int wait_result_ready(int value)
 {
   int time_cnt = MAX_RESULT_RDY_WAIT_CNT;
-  while((CTC_In(rgstr_vptr.result_time) & RES_READY_MASK) == 0){
-    if(time_cnt == 0)
-      return -1;
-    time_cnt--;
+  if(value == 1) {
+    while((CTC_In(rgstr_vptr.result_time) & RES_READY_MASK) == 0){
+      if(time_cnt == 0)
+        return -1;
+      time_cnt--;
+    }
+  }
+  else if(value == 0) {
+    while((CTC_In(rgstr_vptr.result_time) & RES_READY_MASK) == 1){
+      if(time_cnt == 0)
+        return -1;
+      time_cnt--;
+    }
   }
   return 0;
 }
@@ -433,24 +451,38 @@ int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag){
 
 int send_command(Request *request)
 {
-  if(wait_cmd_ready() < 0) {
+  if(wait_cmd_ready(1) < 0) {
     printf("wait_cmd_ready timeout.\n");
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command);
+  CTC_Out(rgstr_vptr.timestamp, request->timestamp);
+  if(wait_cmd_ready(0) < 0) {
+    printf("wait_cmd_ready timeout.\n");
+    return -1;
+  }
+  CTC_Out(rgstr_vptr.cmd, request->command & ~CMD_ACK_MASK & ~CMD_READY_MASK);
   return 0;
 }
 
-int receive_result(Op_result *result)
+int receive_result(Request *request)
 {
-  if(wait_result_ready() < 0) {
+  if(wait_result_ready(1) < 0) {
+    printf("wait_result_ready timeout.\n");
     return -1;
   }
   u64 result_reg;
   u64 result_time;
   u16 result_tag;
+  CTC_Out(rgstr_vptr.result_time);
+  if(wait_result_ready(0) < 0) {
+    printf("wait_result_ready timeout.\n");
+    return -1;
+  }
+
   result_reg = CTC_In(rgstr_vptr.result_time);
   result_tag = (result_reg | RES_TAG_MASK) >> RES_TAG_BIT;
   result_time = (result_reg | RES_TIME_MASK);
+  CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
   return 0;
 }
