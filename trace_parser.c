@@ -11,6 +11,7 @@ int tracefile_open(Trace *trace)
   return 0;
 }
 
+/*
 int get_trace(Trace *trace, Request *request)
 {
   static char buffer[200];
@@ -32,3 +33,4 @@ int get_trace(Trace *trace, Request *request)
 
   return 0;
 }
+  */
