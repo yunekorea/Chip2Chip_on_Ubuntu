@@ -132,7 +132,7 @@ int erase_block(u64 bus, u64 chip, u64 block);
 int wait_cmd_ready(int value);
 int wait_wrData_ready(int value);
 
-int wait_result_ready(void);
+int wait_result_ready(int value);
 int wait_writeData_req(u64* requested_tag);
 int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag);
 
