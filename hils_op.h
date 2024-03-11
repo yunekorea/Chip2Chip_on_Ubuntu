@@ -10,7 +10,9 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/mman.h>
-#include "main.h"
+#include "types.h"
+#include "trace_parser.h"
+#include "result_process.h"
 /* register address */
 
 #define HILS_BASE_ADDR  0xa0080000
