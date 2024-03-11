@@ -5,6 +5,8 @@
 #include "types.h"
 
 #ifndef _TRACE_PARSER
+struct _IO_FILE;
+typedef struct _IO_FILE FILE;
 
 typedef struct _Request {
   u64 timestamp;
