@@ -45,7 +45,7 @@ int main()
   req->chip = 0;
   req->block = 0;
   req->page = 0;
-  req->operation = 1;
+  req->operation = 0x03;
   allocate_tag(req);
   printf("allocate C\n");
   generate_command(req);

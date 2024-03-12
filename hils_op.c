@@ -62,8 +62,8 @@ u64 generate_command(Request *request) {
   command = (key << CMD_KEY_BIT)      \
 	  | ((u64)0x01 << CMD_START_BIT)\
           | (tag << CMD_TAG_BIT)      \
-	  | (CMD_OP_READ)\
-//          | (operation << CMD_OP_BIT) 
+      	  /*| (CMD_OP_READ)\ */
+          | ((u64)operation << CMD_OP_BIT) \
           | (bus << CMD_BUS_BIT)      \
           | (chip << CMD_CHIP_BIT)    \
           | (block << CMD_BLOCK_BIT)  \
