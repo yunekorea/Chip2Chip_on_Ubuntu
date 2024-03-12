@@ -18,20 +18,22 @@ int vptr_mmap(u64** vptr, off_t addr) { //Mapping registers to the host's memory
 
 int rgstr_offset_map(u64** vptr, u64 offset) {
 	*vptr = rgstr_vptr.timestamp + offset/sizeof(u64*);
+  return 0;
 }
 
 int c2c_init(void) {	//opening memory device as a file descriptor to use them with mmap/msync
 	
 	if((fd_memory = open("/dev/mem", O_RDWR | O_SYNC)) != -1) { //"open" the memory device
 		//assign vptr with mmap function
-		vptr_mmap(&rgstr_vptr.timestamp, HILS_TS_ADDR);
+		if(vptr_mmap(&rgstr_vptr.timestamp, HILS_TS_ADDR) == -1)
+      return -1;
 
 		rgstr_offset_map(&rgstr_vptr.cmd, TS_OFFSET);
 		rgstr_offset_map(&rgstr_vptr.result_time, RESULT_OFFSET);
 		rgstr_offset_map(&rgstr_vptr.chip_res_time, CHIP_RES_OFFSET);
 		return 0;
-		return -1;
 	}
+  return -1;
 }
 
 int c2c_terminate(void) {
