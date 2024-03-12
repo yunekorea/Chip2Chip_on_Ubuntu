@@ -58,17 +58,20 @@ u64 generate_command(Request *request) {
   u8 chip = request->chip;
   u16 block = request->block;
   u8 page = request->page;
-  u64 command;
+  u64 command = 0;
   command = (key << CMD_KEY_BIT)      \
+	  | ((u64)0x01 << CMD_START_BIT)\
           | (tag << CMD_TAG_BIT)      \
-          | (operation << CMD_OP_BIT) \
+	  | (CMD_OP_READ)\
+//          | (operation << CMD_OP_BIT) 
           | (bus << CMD_BUS_BIT)      \
           | (chip << CMD_CHIP_BIT)    \
           | (block << CMD_BLOCK_BIT)  \
           | (page << CMD_PAGE_BIT)    \
           | CMD_READY_MASK            \
           | CMD_ACK_MASK;
-
+  printf("gen command : %llx\n", command);
+  request->command = command;
   return command;
 }
 
@@ -119,13 +122,13 @@ int wait_result_ready(int value)
 int send_command(Request *request)
 {
   if(wait_cmd_ready(1) < 0) {
-    printf("wait_cmd_ready timeout.\n");
+    printf("wait_cmd_ready_1 timeout.\n");
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command);
   CTC_Out(rgstr_vptr.timestamp, request->timestamp);
   if(wait_cmd_ready(0) < 0) {
-    printf("wait_cmd_ready timeout.\n");
+    printf("wait_cmd_ready_0 timeout.\n");
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command & ~CMD_ACK_MASK & ~CMD_READY_MASK);

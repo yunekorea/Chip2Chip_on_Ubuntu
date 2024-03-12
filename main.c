@@ -50,7 +50,7 @@ int main()
   printf("allocate C\n");
   generate_command(req);
   printf("generate C\n");
-  printf("command : %x\n", req->command);
+  printf("command : %llx\n", req->command);
   send_command(req);
   printf("send cmd C\n");
 

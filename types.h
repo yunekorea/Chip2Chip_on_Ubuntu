@@ -1,4 +1,5 @@
 #ifndef _UINT_TYPES
+#define _UINT_TYPES
 typedef unsigned long long u64;
 typedef unsigned long u32;
 typedef unsigned short u16;
