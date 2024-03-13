@@ -9,7 +9,14 @@ typedef struct _Op_result {
   u64 time_spent;
 } Op_result;
 
+typedef struct _Fin_req {
+  Request *first;
+  Request *last;
+  u8 req_num;
+} Fin_req;
+
 #endif
 
 int resultfile_open(FILE *res_file);
-int save_fined_to_file(FILE *res_file, Request *request);
+int save_fined_to_file(FILE *res_file, Request *request, int freq);
+int save_fin_req(Fin_req *fr, Request *request);

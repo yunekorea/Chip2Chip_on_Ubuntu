@@ -33,37 +33,34 @@ int main()
     return(printf("Failed to open the tracefile.\nAborting\n"));
   */
   
-  /*
   if(resultfile_open(res_file) == -1)
     return(printf("Failed to open the resultfile.\nAborting\n"));
-  */
+  Request *req;
 
-  Request *req = malloc(sizeof(Request));
-	printf("malloc C\n");
-  //get_trace(trace, req);
-  req->bus = 0;
-  req->chip = 0;
-  req->block = 0;
-  req->page = 0;
-  req->operation = 0x03;
-  allocate_tag(req);
-  printf("allocate C\n");
-  generate_command(req);
-  printf("generate C\n");
-  printf("command : %llx\n", req->command);
-  send_command(req);
-  printf("send cmd C\n");
-
-  Op_result *res = malloc(sizeof(Op_result));
-  u64 result_time;
-  receive_result(res);
-  printf("receive result C\n");
-  Request *fin_req = save_result_to_request(res);
-  printf("save result to request C\n");
+  int trace_num = 0;
+  while(get_trace(trace, req) == -1) {
+    get_trace(trace, req);
+    allocate_tag(req);
+    generate_command(req);
+    send_command(req);
+    trace_num++;
+  }
   
+  Fin_req *freq = malloc(sizeof(Fin_req));
+  freq->req_num = 0;
 
-  //fclose(trace->trfile);
-  //fclose(res_file);
+  while(trace_num > 0) {
+    Op_result *res = malloc(sizeof(Op_result));
+    receive_result(res);
+    Request *fin_req = save_result_to_request(res);
+    save_fin_req(freq, fin_req);
+    trace_num--;
+  }
+
+  save_fined_to_file(res_file, freq->first, freq->req_num);
+
+  fclose(trace->trfile);
+  fclose(res_file);
 
   if(termination() == -1)
     return(printf("Termination phase failed.\n"));

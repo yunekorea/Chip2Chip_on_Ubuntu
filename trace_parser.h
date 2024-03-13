@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
 #include "types.h"
 
 #ifndef _TRACE_PARSER
@@ -16,7 +17,6 @@ typedef struct _Request {
   u8 chip;
   u16 block;
   u8 page;
-  u32 size;
   u8 tag;
   u64 command;
   u64 result_time;
