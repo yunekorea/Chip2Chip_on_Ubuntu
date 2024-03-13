@@ -28,7 +28,7 @@ int c2c_init(void) {	//opening memory device as a file descriptor to use them wi
 		if(vptr_mmap(&rgstr_vptr.timestamp, HILS_TS_ADDR) == -1)
       return -1;
 
-		rgstr_offset_map(&rgstr_vptr.cmd, TS_OFFSET);
+		rgstr_offset_map(&rgstr_vptr.cmd, CMD_OFFSET);
 		rgstr_offset_map(&rgstr_vptr.result_time, RESULT_OFFSET);
 		rgstr_offset_map(&rgstr_vptr.chip_res_time, CHIP_RES_OFFSET);
 		return 0;
