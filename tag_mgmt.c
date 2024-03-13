@@ -26,7 +26,7 @@ Request *save_result_to_request(Op_result *result)
   tags[result->tag]->result_time = result->time_spent;
   
   fin_req = tags[result->tag];
-  free(result);
+  //free(result);
 
   return fin_req;
 }
