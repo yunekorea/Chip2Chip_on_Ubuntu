@@ -57,6 +57,7 @@ int main()
   Op_result *res = malloc(sizeof(Op_result));
   u64 result_time;
   receive_result(res);
+  printf("receive result C\n");
   Request *fin_req = save_result_to_request(res);
   printf("save result to request C\n");
   
