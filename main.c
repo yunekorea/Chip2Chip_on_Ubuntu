@@ -23,11 +23,11 @@ int main()
   Trace *trace = malloc(sizeof(Trace));
   FILE* res_file;
   printf("Chip2Chip HILS test\n");
-  /*if(initialization() == -1)
+  if(initialization() == -1)
     return(printf("Initialzation phase failed.\nAborting.\n"));
   else
     printf("Initialization phase success.\n");
-  */
+  
   
   if(tracefile_open(trace) == -1)
     return(printf("Failed to open the tracefile.\nAborting\n"));
@@ -38,7 +38,7 @@ int main()
   Request *req;
   printf("file open complete.\n");
   int trace_num = 0;
-  while(get_trace(trace, req) == -1) {
+  while(get_trace(trace, req) != -1) {
     allocate_tag(req);
     generate_command(req);
     send_command(req);

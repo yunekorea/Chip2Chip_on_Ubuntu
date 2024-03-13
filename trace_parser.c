@@ -30,9 +30,9 @@ int get_trace(Trace *trace, Request *request)
   }
   printf("fgets done\n");
   sscanf(buffer, "%lld %s %hu %hu %hu %hu", &timestamp, &operation_name, &bus, &chip, &block, &page);
-  printf("%s\n", buffer);
+  //printf("%s\n", buffer);
   request = malloc(sizeof(Request));
-  printf("%llu, %s, %hu, %hu, %hu, %hu\n", timestamp, operation_name, bus, chip, block, page);
+  //printf("%llu, %s, %hu, %hu, %hu, %hu\n", timestamp, operation_name, bus, chip, block, page);
   request->timestamp = timestamp;
   if(strcmp(operation_name, "read") == 0)
     request->operation = 3;
