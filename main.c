@@ -58,11 +58,11 @@ int main()
   u64 result_time;
   receive_result(res);
   Request *fin_req = save_result_to_request(res);
-
+  printf("save result to request C\n");
   
 
-  fclose(trace->trfile);
-  fclose(res_file);
+  //fclose(trace->trfile);
+  //fclose(res_file);
 
   if(termination() == -1)
     return(printf("Termination phase failed.\n"));
