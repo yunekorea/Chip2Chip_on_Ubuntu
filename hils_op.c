@@ -143,7 +143,7 @@ int receive_result(Op_result *result)
   }
   u64 result_reg;
   u64 result_time;
-  u64 result_tag;
+  u8 result_tag;
   CTC_Out(rgstr_vptr.result_time, RES_ACK_MASK);
   if(wait_result_ready(0) < 0) {
     printf("wait_result_ready timeout.\n");
@@ -151,11 +151,11 @@ int receive_result(Op_result *result)
   }
 
   result_reg = CTC_In(rgstr_vptr.result_time);
-  result_tag = (result_reg | (u64)0x7F << 40);
-  result_tag = result_tag >> RES_TAG_BIT;
+  result_tag = (result_reg | (u64)0x7F << 40) >> RES_TAG_BIT;
+  //result_tag = result_tag >> RES_TAG_BIT;
   result_time = (result_reg | RES_TIME_MASK);
   CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
-  result->tag = (u16)result_tag;
+  result->tag = (u8)result_tag;
   result->time_spent = result_time;
   return 0;
 }
