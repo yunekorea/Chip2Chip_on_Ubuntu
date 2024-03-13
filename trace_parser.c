@@ -2,7 +2,7 @@
 
 int tracefile_open(Trace *trace)
 {
-  trace = malloc(sizeof(Trace));
+  //trace = malloc(sizeof(Trace));
   printf("I/O trace file name : ");
   scanf("%s", trace->filename);
   trace->trfile = fopen(trace->filename, "r");
@@ -16,19 +16,23 @@ int get_trace(Trace *trace, Request *request)
 {
   static char buffer[200];
   u64 timestamp;
-  char *operation_name;
+  char operation_name[5];
   u8 bus;
   u8 chip;
   u16 block;
   u8 page;
 
   u8 ope;
-  if(feof(trace->trfile))
-    return -1;
-  
-  fgets(buffer, 200, trace->trfile);
+  if(fgets(buffer, 200, trace->trfile) == NULL) {
+    printf("fgets NULL\n");
+    if(feof(trace->trfile) != 0)
+      return -1;
+  }
+  printf("fgets done\n");
   sscanf(buffer, "%lld %s %d %d %d %d %d", &timestamp, &operation_name, &bus, &chip, &block, &page);
+  printf("%s\n", buffer);
   request = malloc(sizeof(Request));
+  printf("%lld, %s, %d, %d, %d, %d, %d\n", timestamp, operation_name, bus, chip, block, page);
   request->timestamp = timestamp;
   if(strcmp(operation_name, "read") == 0)
     request->operation = 3;
@@ -45,7 +49,6 @@ int get_trace(Trace *trace, Request *request)
   request->block = block;
   request->page = page;
   request->next_request = NULL;
-  request->tag = 0b10000000;
 
   return 0;
 }

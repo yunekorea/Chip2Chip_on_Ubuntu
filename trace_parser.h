@@ -7,8 +7,8 @@
 
 #ifndef _TRACE_PARSER
 #define _TRACE_PARSER
-struct _IO_FILE;
-typedef struct _IO_FILE FILE;
+//struct _IO_FILE;
+//typedef struct _IO_FILE FILE;
 
 typedef struct _Request {
   u64 timestamp;
