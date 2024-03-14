@@ -44,10 +44,10 @@ int get_trace(Trace *trace, Request *request)
     printf("Trace's operation isn't valid\n\toperation : %s\n", operation_name);
     return -1;
   }
-  request->bus = (u8)bus;
-  request->chip = (u8)chip;
+  request->bus = bus;
+  request->chip = chip;
   request->block = block;
-  request->page = (u8)page;
+  request->page = page;
   request->next_request = NULL;
 
   return 0;

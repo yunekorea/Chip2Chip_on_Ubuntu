@@ -53,21 +53,21 @@ u64 generate_command(Request *request) {
 
   u64 key = CMD_ACCESS_KEY;
   u64 tag = request->tag;
-  u8 operation = request->operation;
-  u8 bus = request->bus;
-  u8 chip = request->chip;
+  u16 operation = request->operation;
+  u16 bus = request->bus;
+  u16 chip = request->chip;
   u16 block = request->block;
-  u8 page = request->page;
+  u16 page = request->page;
   u64 command = 0;
   command = (key << CMD_KEY_BIT)      \
 	  | ((u64)0x01 << CMD_START_BIT)\
-          | (tag << CMD_TAG_BIT)      \
+          | ((u64)tag << CMD_TAG_BIT)      \
       	  /*| (CMD_OP_READ)\ */
           | ((u64)operation << CMD_OP_BIT) \
-          | (bus << CMD_BUS_BIT)      \
-          | (chip << CMD_CHIP_BIT)    \
-          | (block << CMD_BLOCK_BIT)  \
-          | (page << CMD_PAGE_BIT)    \
+          | ((u64)bus << CMD_BUS_BIT)      \
+          | ((u64)chip << CMD_CHIP_BIT)    \
+          | ((u64)block << CMD_BLOCK_BIT)  \
+          | ((u64)page << CMD_PAGE_BIT)    \
           | CMD_READY_MASK            \
           | CMD_ACK_MASK;
   printf("gen command : %llx\n", command);

@@ -12,12 +12,12 @@
 
 typedef struct _Request {
   u64 timestamp;
-  u8 operation;
-  u8 bus;
-  u8 chip;
+  u16 operation;
+  u16 bus;
+  u16 chip;
   u16 block;
-  u8 page;
-  u8 tag;
+  u16 page;
+  u16 tag;
   u64 command;
   u64 result_time;
   struct _Request *next_request;
