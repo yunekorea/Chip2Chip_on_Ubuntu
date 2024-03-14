@@ -16,7 +16,7 @@ int save_fined_to_file(FILE *res_file, Request *request, int freq)
   Request *next;
   while(freq > 0) {
     next = request->next_request;
-    fprintf(res_file, "%x, %d, %d\n", request->command, request->timestamp, request->result_time);
+    fprintf(res_file, "%llx, %lld, %lld\n", request->command, request->timestamp, request->result_time);
     free(request);
     request = next;
     freq--;
