@@ -135,19 +135,20 @@ int send_command(Request *request)
   return 0;
 }
 
-int receive_result(Op_result *result)
+Op_result* receive_result(void)
 {
   if(wait_result_ready(1) < 0) {
     printf("wait_result_ready timeout.\n");
-    return -1;
+    return NULL;
   }
+  Op_result *result = malloc(sizeof(Op_result));
   u64 result_reg;
   u64 result_time;
   u8 result_tag;
   CTC_Out(rgstr_vptr.result_time, RES_ACK_MASK);
   if(wait_result_ready(0) < 0) {
     printf("wait_result_ready timeout.\n");
-    return -1;
+    return NULL;
   }
 
   result_reg = CTC_In(rgstr_vptr.result_time);
@@ -157,5 +158,5 @@ int receive_result(Op_result *result)
   CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
   result->tag = (u8)result_tag;
   result->time_spent = result_time;
-  return 0;
+  return result;
 }

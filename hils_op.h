@@ -137,4 +137,4 @@ int wait_writeData_req(u64* requested_tag);
 int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag);
 
 int send_command(Request *request);
-int receive_result(Op_result *result);
+Op_result* receive_result(void);

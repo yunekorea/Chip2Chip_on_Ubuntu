@@ -24,12 +24,12 @@ Request *save_result_to_request(Op_result *result)
 {
   printf("save result to request\n");
   Request *fin_req;
-  tags[(u8)result->tag]->result_time = result->time_spent;
+  tags[result->tag]->result_time = result->time_spent;
   printf("SRTR : time save\n");
-  fin_req = tags[(u8)result->tag];
+  fin_req = tags[result->tag];
 
   free(result);
-  tags[(u8)result->tag] = NULL;
+  tags[result->tag] = NULL;
 
   return fin_req;
 }

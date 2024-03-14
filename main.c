@@ -49,8 +49,8 @@ int main()
   freq->req_num = 0;
 
   while(trace_num > 0) {
-    Op_result *res = malloc(sizeof(Op_result));
-    receive_result(res);
+    Op_result *res;
+    res = receive_result();
     Request *fin_req = save_result_to_request(res);
     save_fin_req(freq, fin_req);
     trace_num--;
