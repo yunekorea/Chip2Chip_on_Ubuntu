@@ -16,11 +16,12 @@ FILE* resultfile_open(void)
 int save_fined_to_file(FILE *res_file, Request *request, int freq) 
 {
   Request *next;
+  Request *current = request;
   while(freq > 0) {
-    next = request->next_request;
-    fprintf(res_file, "%llx, %lld, %lld\n", request->command, request->timestamp, request->result_time);
-    free(request);
-    request = next;
+    next = current->next_request;
+    fprintf(res_file, "%llx, %lld, %lld\n", current->command, current->timestamp, current->result_time);
+    free(current);
+    current = next;
     freq--;
   }
   return 0;
