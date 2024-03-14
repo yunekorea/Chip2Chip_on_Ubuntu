@@ -33,7 +33,7 @@ int main()
     return(printf("Failed to open the tracefile.\nAborting\n"));
   
   
-  if(resultfile_open(res_file) == -1)
+  if((res_file = resultfile_open()) == NULL)
     return(printf("Failed to open the resultfile.\nAborting\n"));
   Request *req;
   printf("file open complete.\n");

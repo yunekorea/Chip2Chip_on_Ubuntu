@@ -2,12 +2,14 @@
 #include <pthread.h>
 #include "result_process.h"
 
-int resultfile_open(FILE *res_file)
+FILE* resultfile_open(void)
 {
-  if((res_file = fopen("result.dat", "w"))!=NULL)
+  /*if((res_file = fopen("result.dat", "w"))!=NULL)
     return 0;
   else
     return -1;
+  */
+  return fopen("result.dat", "w");
 }
 
 

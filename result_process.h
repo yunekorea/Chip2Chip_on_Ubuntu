@@ -17,6 +17,6 @@ typedef struct _Fin_req {
 
 #endif
 
-int resultfile_open(FILE *res_file);
+FILE* resultfile_open(void);
 int save_fined_to_file(FILE *res_file, Request *request, int freq);
 int save_fin_req(Fin_req *fr, Request *request);
