@@ -30,5 +30,5 @@ typedef struct _Trace {
 #endif
 
 int tracefile_open(Trace *trace);
-int get_trace(Trace *trace, Request *request);
+Request* get_trace(Trace *trace);
 int free_request(Request *request);

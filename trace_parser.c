@@ -12,7 +12,7 @@ int tracefile_open(Trace *trace)
 }
 
 
-int get_trace(Trace *trace, Request *request)
+Request* get_trace(Trace *trace)
 {
   static char buffer[200];
   u64 timestamp;
@@ -22,11 +22,12 @@ int get_trace(Trace *trace, Request *request)
   u16 block;
   u16 page;
 
-  u8 ope;
+  Request *request;
+
   if(fgets(buffer, 200, trace->trfile) == NULL) {
     printf("fgets NULL\n");
     if(feof(trace->trfile) != 0)
-      return -1;
+      return NULL;
   }
   printf("fgets done\n");
   sscanf(buffer, "%lld %s %hu %hu %hu %hu", &timestamp, &operation_name, &bus, &chip, &block, &page);
@@ -42,7 +43,7 @@ int get_trace(Trace *trace, Request *request)
     request->operation = 5;
   else {
     printf("Trace's operation isn't valid\n\toperation : %s\n", operation_name);
-    return -1;
+    return NULL;
   }
   request->bus = bus;
   request->chip = chip;
@@ -50,6 +51,6 @@ int get_trace(Trace *trace, Request *request)
   request->page = page;
   request->next_request = NULL;
 
-  return 0;
+  return request;
 }
 
