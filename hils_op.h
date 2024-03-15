@@ -44,6 +44,7 @@
 //#define CMD_READY_MASK 			0x0000010000000000
 #define CMD_READY_MASK      ((u64)0x01 << CMD_READY_BIT) //0x20000000000
 #define CMD_ACK_MASK        ((u64)0x01 << CMD_ACK_BIT)
+#define CMD_START_MASK      ((u64)0x01 << CMD_START_BIT)
 
 /* result time */
 #define RES_ACK_BIT         48
@@ -113,7 +114,7 @@
 #define MAX_ERASE_STATUS_WAIT_CNT 	100000
 #define MAX_CMD_RDY_WAIT_CNT 		10000
 #define MAX_WR_DATA_READY_CNT 		10000
-#define MAX_RESULT_RDY_WAIT_CNT   10000
+#define MAX_RESULT_RDY_WAIT_CNT   1000000
 
 #define REG_SIZE			0xA8
 
@@ -136,5 +137,7 @@ int wait_result_ready(int value);
 int wait_writeData_req(u64* requested_tag);
 int wait_flash_operation(u64 op, u64 tag, int* Qnumber, u64* ack,u64* ack_tag);
 
+
+int flush_command(void);
 int send_command(Request *request);
 Op_result* receive_result(void);

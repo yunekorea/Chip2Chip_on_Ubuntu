@@ -75,10 +75,6 @@ u64 generate_command(Request *request) {
   return command;
 }
 
-
-
-
-
 int wait_cmd_ready(int value){
 	int time_cnt = MAX_CMD_RDY_WAIT_CNT;
   if(value == 1) {
@@ -132,6 +128,20 @@ int send_command(Request *request)
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command & ~CMD_ACK_MASK & ~CMD_READY_MASK);
+  return 0;
+}
+
+int flush_command(void)
+{
+  u64 key = CMD_ACCESS_KEY;
+  u64 flush = 0;
+
+  flush = (key << CMD_KEY_BIT);
+  CTC_Out(rgstr_vptr.cmd, flush);
+  flush = (key << CMD_KEY_BIT)  \
+          | CMD_READY_MASK;
+  CTC_Out(rgstr_vptr.cmd, flush);
+
   return 0;
 }
 

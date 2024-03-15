@@ -38,6 +38,9 @@ int main()
   Request *req;
   printf("file open complete.\n");
   int trace_num = 0;
+
+  flush_command(); 
+
   while((req = get_trace(trace)) != NULL) {
     allocate_tag(req);
     generate_command(req);
