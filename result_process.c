@@ -13,31 +13,22 @@ FILE* resultfile_open(void)
 }
 
 
-int save_fined_to_file(FILE *res_file, Request *request, int freq) 
+int save_fined_to_file(FILE *res_file, Req_list *list) 
 {
   Request *next;
-  Request *current = request;
-  while(freq > 0) {
+  Request *current = list->first;
+  u16 save_num = 128;
+  while(list->req_num > 0 && save_num > 0) {
     next = current->next_request;
+    next->prev_request = NULL;
+    list->first = next;
+    list->req_num--;
+    save_num--;
     fprintf(res_file, "%llx, %lld, %lld\n", current->command, current->timestamp, current->result_time);
     free(current);
     current = next;
-    freq--;
   }
   return 0;
 }
 
-int save_fin_req(Fin_req *fr, Request *request)
-{
-  if(fr->req_num == 0) {
-    fr->first = fr->last = request;
-    fr->req_num++;
-  }
-  else {
-    fr->last->next_request = request;
-    fr->last = request;
-    fr->req_num++;
-  }
 
-  return 0;
-}

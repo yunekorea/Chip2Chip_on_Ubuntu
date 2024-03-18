@@ -39,27 +39,28 @@ int main()
   printf("file open complete.\n");
   int trace_num = 0;
 
-  flush_command(); 
+  flush_command();
+  Req_list *req_list = malloc(sizeof(Req_list));
+  req_list->req_num = 0;
 
   while((req = get_trace(trace)) != NULL) {
+    save_req_list(req_list, req);
     allocate_tag(req);
     generate_command(req);
     send_command(req);
     trace_num++;
   }
   
-  Fin_req *freq = malloc(sizeof(Fin_req));
-  freq->req_num = 0;
+
 
   while(trace_num > 0) {
     Op_result *res;
     res = receive_result();
     Request *fin_req = save_result_to_request(res);
-    save_fin_req(freq, fin_req);
     trace_num--;
   }
 
-  save_fined_to_file(res_file, freq->first, freq->req_num);
+  save_fined_to_file(res_file, req_list);
 
   fclose(trace->trfile);
   fclose(res_file);

@@ -11,6 +11,21 @@ int tracefile_open(Trace *trace)
   return 0;
 }
 
+int save_req_list(Req_list *list, Request *request)
+{
+  if(list->req_num == 0) {
+    list->first = list->last = request;
+    list->req_num++;
+  }
+  else {
+    list->last->next_request = request;
+    request->prev_request = list->last;
+    list->last = request;
+    list->req_num++;
+  }
+
+  return 0;
+}
 
 Request* get_trace(Trace *trace)
 {
@@ -49,7 +64,8 @@ Request* get_trace(Trace *trace)
   request->chip = chip;
   request->block = block;
   request->page = page;
-  request->next_request = NULL;
+
+  request->complete = 0;
 
   return request;
 }

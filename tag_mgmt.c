@@ -25,6 +25,7 @@ Request *save_result_to_request(Op_result *result)
   printf("save result to request\n");
   Request *fin_req;
   tags[result->tag]->result_time = result->time_spent;
+  tags[result->tag]->complete = 1;
   printf("SRTR : time save\n");
   fin_req = tags[result->tag];
 
