@@ -8,4 +8,8 @@
 int initialization(void);
 int termination(void);
 
+int thread_command_generator(void);
+int thread_result_receiver(void);
+int thread_file_saver(void);
+
 

@@ -18,6 +18,21 @@ int termination(void)
     return 0;
 }
 
+int thread_command_generator(void)
+{
+  return 0;
+}
+
+int thread_result_receiver(void)
+{
+  return 0;
+}
+
+int thread_file_saver(void)
+{
+  return 0;
+}
+
 int main()
 {
   Trace *trace = malloc(sizeof(Trace));
