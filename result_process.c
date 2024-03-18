@@ -18,9 +18,12 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
   Request *next;
   Request *current = list->first;
   u16 save_num = 128;
-  while(list->req_num > 0 && save_num > 0) {
+  while(list->req_num > 0 && save_num > 0 && current != NULL && current->complete == 1) {
     next = current->next_request;
-    next->prev_request = NULL;
+    if(next != NULL)
+      next->prev_request = NULL;
+    else
+      list->last = NULL;
     list->first = next;
     list->req_num--;
     save_num--;
