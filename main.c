@@ -42,7 +42,8 @@ void* thread_result_receiver(void *data)
   Request *fin_req;
   while(*args->trace_eof == 0 || tag_list_empty() == 0) {
     res = receive_result();
-    fin_req = save_result_to_request(res);
+    if(res != NULL)
+      fin_req = save_result_to_request(res);
   }
 
   return 0;
@@ -98,6 +99,10 @@ int main(void)
   thread_id = pthread_create(&pthread[0], NULL, thread_command_generator, (void*)thread_args);
   thread_id = pthread_create(&pthread[1], NULL, thread_result_receiver, (void*)thread_args);
   thread_id = pthread_create(&pthread[2], NULL, thread_file_saver, (void*)thread_args);
+
+  pthread_join(pthread[0], (void**)&status);
+  pthread_join(pthread[1], (void**)&status);
+  pthread_join(pthread[2], (void**)&status);
 
   fclose(trace->trfile);
   fclose(res_file);
