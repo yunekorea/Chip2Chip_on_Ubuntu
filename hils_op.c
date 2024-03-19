@@ -69,7 +69,8 @@ u64 generate_command(Request *request) {
           | ((u64)block << CMD_BLOCK_BIT)  \
           | ((u64)page << CMD_PAGE_BIT)    \
           | CMD_READY_MASK            \
-          | CMD_ACK_MASK;
+          | CMD_ACK_MASK              \
+          | CMD_START_MASK;
   printf("gen command : %llx\n", command);
   request->command = command;
   return command;
