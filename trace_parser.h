@@ -40,6 +40,6 @@ typedef struct _Req_list {
 #endif
 
 int tracefile_open(Trace *trace);
-Request* get_trace(Trace *trace);
+Request* get_trace(FILE *trace);
 int free_request(Request *request);
 int save_req_list(Req_list *list, Request *request);

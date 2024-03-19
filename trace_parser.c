@@ -27,7 +27,7 @@ int save_req_list(Req_list *list, Request *request)
   return 0;
 }
 
-Request* get_trace(Trace *trace)
+Request* get_trace(FILE *trace)
 {
   static char buffer[200];
   u64 timestamp;
@@ -39,9 +39,9 @@ Request* get_trace(Trace *trace)
 
   Request *request;
 
-  if(fgets(buffer, 200, trace->trfile) == NULL) {
+  if(fgets(buffer, 200, trace) == NULL) {
     printf("fgets NULL\n");
-    if(feof(trace->trfile) != 0)
+    if(feof(trace) != 0)
       return NULL;
   }
   printf("fgets done\n");
