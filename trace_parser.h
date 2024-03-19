@@ -34,7 +34,7 @@ typedef struct _Trace {
 typedef struct _Req_list {
   Request *first;
   Request *last;
-  u8 req_num;
+  u16 req_num;
 } Req_list;
 
 #endif

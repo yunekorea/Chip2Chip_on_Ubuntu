@@ -34,3 +34,12 @@ Request *save_result_to_request(Op_result *result)
 
   return fin_req;
 }
+
+int tag_list_empty(void)
+{
+  for(int i = 0; i < 128; i++) {
+    if(tags[i] != NULL)
+      return 0;
+  }
+  return 1;
+}

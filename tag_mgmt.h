@@ -4,3 +4,4 @@
 
 int allocate_tag(Request *request);
 Request *save_result_to_request(Op_result *result);
+int tag_list_empty(void);

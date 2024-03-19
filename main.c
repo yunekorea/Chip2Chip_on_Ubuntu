@@ -18,18 +18,42 @@ int termination(void)
     return 0;
 }
 
-int thread_command_generator(void)
+int thread_command_generator(Req_list *req_list, u8 *trace_eof, Trace *trace)
 {
+  Request *req;
+
+  while((req = get_trace(trace)) != NULL) {
+    save_req_list(req_list, req);
+    allocate_tag(req);
+    generate_command(req);
+    send_command(req);
+  }
+
+  *trace_eof = 1;
+  
   return 0;
 }
 
-int thread_result_receiver(void)
+int thread_result_receiver(Req_list *req_list, u8 *trace_eof)
 {
+  Op_result *res;
+  Request *fin_req;
+  while(*trace_eof == 0 || tag_list_empty() == 0) {
+    res = receive_result();
+    fin_req = save_result_to_request(res);
+  }
+
   return 0;
 }
 
-int thread_file_saver(void)
+int thread_file_saver(Req_list *req_list, u8 *trace_eof, FILE *res_file)
 {
+  while(*trace_eof == 0 || req_list->last != NULL) {
+    if(*trace_eof == 0 && req_list->req_num > 256)
+      save_fined_to_file(res_file, req_list);
+    else if(*trace_eof == 1 && req_list->last != NULL)
+      save_fined_to_file(res_file, req_list);
+  }
   return 0;
 }
 
@@ -52,7 +76,7 @@ int main()
     return(printf("Failed to open the resultfile.\nAborting\n"));
   Request *req;
   printf("file open complete.\n");
-  int trace_num = 0;
+  u8 trace_eof = 0;
 
   flush_command();
   Req_list *req_list = malloc(sizeof(Req_list));

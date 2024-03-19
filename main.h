@@ -8,8 +8,8 @@
 int initialization(void);
 int termination(void);
 
-int thread_command_generator(void);
-int thread_result_receiver(void);
-int thread_file_saver(void);
+int thread_command_generator(Req_list *req_list, u8 *trace_eof, Trace *trace);
+int thread_result_receiver(Req_list *req_list, u8 *trace_eof);
+int thread_file_saver(Req_list *req_list, u8 *trace_eof, FILE *res_file);
 
 
