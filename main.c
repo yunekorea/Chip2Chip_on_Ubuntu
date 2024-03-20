@@ -41,6 +41,7 @@ void* thread_result_receiver(void *data)
   Op_result *res = NULL;
   Request *fin_req;
   while(*args->trace_eof == 0 || tag_list_empty() == 0) {
+    res = NULL;
     res = receive_result();
     if(res != NULL)
       fin_req = save_result_to_request(res);
