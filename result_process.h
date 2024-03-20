@@ -5,7 +5,7 @@
 #define _RESULT_PROCESS
 
 typedef struct _Op_result {
-  u8 tag;
+  u16 tag;
   u64 time_spent;
 } Op_result;
 

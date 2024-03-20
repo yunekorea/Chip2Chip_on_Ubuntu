@@ -38,7 +38,7 @@ void* thread_command_generator(void *data)
 void* thread_result_receiver(void *data)
 {
   Thread_args *args = data;
-  Op_result *res;
+  Op_result *res = NULL;
   Request *fin_req;
   while(*args->trace_eof == 0 || tag_list_empty() == 0) {
     res = receive_result();

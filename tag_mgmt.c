@@ -29,8 +29,8 @@ Request *save_result_to_request(Op_result *result)
   printf("SRTR : time save\n");
   fin_req = tags[result->tag];
 
-  free(result);
   tags[result->tag] = NULL;
+  free(result);
 
   return fin_req;
 }
