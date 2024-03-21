@@ -21,6 +21,7 @@ typedef struct _Request {
   u16 tag;
   u64 command;
   u64 result_time;
+  u64 result_chip_time;
   u8 complete;
   struct _Request *prev_request;
   struct _Request *next_request;

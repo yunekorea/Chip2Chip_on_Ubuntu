@@ -161,15 +161,20 @@ Op_result* receive_result(void)
 
   Op_result *result = malloc(sizeof(Op_result));
   u64 result_reg;
+  u64 chip_result_reg;
   u64 result_time;
+  u64 chip_result_time;
   u64 result_tag;
 
   result_reg = CTC_In(rgstr_vptr.result_time);
+  chip_result_reg = CTC_In(rgstr_vptr.chip_res_time);
   result_tag = ((result_reg & ((u64)0x7F << 40)));
   result_tag = result_tag >> RES_TAG_BIT;
   result_time = (result_reg & RES_TIME_MASK);
+  chip_result_time = chip_result_reg;
   CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
   result->tag = (u16)result_tag;
   result->time_spent = result_time;
+  result->chip_time_spent = chip_result_time;
   return result;
 }

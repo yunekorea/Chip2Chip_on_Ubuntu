@@ -7,6 +7,7 @@
 typedef struct _Op_result {
   u16 tag;
   u64 time_spent;
+  u64 chip_time_spent;
 } Op_result;
 
 #endif

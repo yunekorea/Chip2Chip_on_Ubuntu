@@ -28,9 +28,9 @@
 
 /* command */
 #define CMD_ACCESS_KEY 			(u64)0x1E5ABC
-#define CMD_OP_READ 				0xc0000000 //(u64)0x03
-#define CMD_OP_WRITE 				0x14000000 //(u64)0x04
-#define CMD_OP_ERASE 				0x18000000 //(u64)0x05
+#define CMD_OP_READ 				0xc0000000 //((u64)0x03 << CMD_OP_BIT)
+#define CMD_OP_WRITE 				0x14000000 //((u64)0x04 << CMD_OP_BIT)
+#define CMD_OP_ERASE 				0x18000000 //((u64)0x05 << CMD_OP_BIT)
 #define CMD_KEY_BIT 				43
 #define CMD_ACK_BIT         42
 #define CMD_READY_BIT 			41
