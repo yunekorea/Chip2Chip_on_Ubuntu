@@ -27,7 +27,7 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
     list->first = next;
     list->req_num--;
     save_num--;
-    fprintf(res_file, "Command : %llx, Tag : %d, Timestamp : %lld, Result time : %lld\n, Chip Result time : %lld\n", 
+    fprintf(res_file, "Command : %llx, Tag : %d, Timestamp : %lld, \n\tResult time : %lld, Chip Result time : %lld\n", 
             current->command, 
             current->tag, 
             current->timestamp, 
