@@ -90,6 +90,7 @@ int main(void)
   flush_command();
   req_list = malloc(sizeof(Req_list));
   req_list->req_num = 0;
+  pthread_mutex_init(&req_list->rl_mutex, NULL);
 
   thread_args = malloc(sizeof(Thread_args));
   thread_args->req_list = req_list;

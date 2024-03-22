@@ -19,6 +19,7 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
   Request *current = list->first;
   u16 save_num = 128;
   while(list->req_num > 0 && save_num > 0 && current != NULL && current->complete == 1) {
+    pthread_mutex_lock(&list->rl_mutex);
     next = current->next_request;
     if(next != NULL)
       next->prev_request = NULL;
@@ -26,6 +27,7 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
       list->last = NULL;
     list->first = next;
     list->req_num--;
+    pthread_mutex_unlock(&list->rl_mutex);
     save_num--;
     fprintf(res_file, "Command : %llx, Tag : %d, Timestamp : %lld, \n\tResult time : %lld, Chip Result time : %lld\n", 
             current->command, 

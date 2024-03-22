@@ -36,6 +36,7 @@ typedef struct _Req_list {
   Request *first;
   Request *last;
   u16 req_num;
+  pthread_mutex_t rl_mutex;
 } Req_list;
 
 #endif
