@@ -31,7 +31,7 @@ void* thread_command_generator(void *data)
   }
 
   *args->trace_eof = 1;
-  
+  printf("thread_command_generator is closed.\n");
   return 0;
 }
 
@@ -46,7 +46,7 @@ void* thread_result_receiver(void *data)
     if(res != NULL)
       fin_req = save_result_to_request(res);
   }
-
+  printf("thread_result_receiver is closed.\n");
   return 0;
 }
 
@@ -59,6 +59,7 @@ void* thread_file_saver(void *data)
     else if(*args->trace_eof == 1 && args->req_list->last != NULL)
       save_fined_to_file(args->res_file, args->req_list);
   }
+  printf("thread_file_saver is closed\n");
   return 0;
 }
 
