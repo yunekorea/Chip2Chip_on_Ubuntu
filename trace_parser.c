@@ -13,20 +13,18 @@ int tracefile_open(Trace *trace)
 
 int save_req_list(Req_list *list, Request *request)
 {
+  pthread_mutex_lock(&list->rl_mutex);
   if(list->req_num == 0) {
-    pthread_mutex_lock(&list->rl_mutex);
     list->first = list->last = request;
     list->req_num++;
-    pthread_mutex_unlock(&list->rl_mutex);
   }
   else {
-    pthread_mutex_lock(&list->rl_mutex);
     list->last->next_request = request;
     request->prev_request = list->last;
     list->last = request;
     list->req_num++;
-    pthread_mutex_unlock(&list->rl_mutex);
   }
+  pthread_mutex_unlock(&list->rl_mutex);
 
   return 0;
 }
@@ -70,6 +68,8 @@ Request* get_trace(FILE *trace)
   request->page = page;
 
   request->complete = 0;
+  request->next_request = NULL;
+  request->prev_request = NULL;
 
   return request;
 }

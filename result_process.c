@@ -21,11 +21,14 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
   while(list->req_num > 0 && save_num > 0 && current != NULL && current->complete == 1) {
     pthread_mutex_lock(&list->rl_mutex);
     next = current->next_request;
-    if(next != NULL)
+    if(list->req_num > 1) {
       next->prev_request = NULL;
-    else
+      list->first = next;
+    }
+    else {
+      list->first = NULL;
       list->last = NULL;
-    list->first = next;
+    }
     list->req_num--;
     pthread_mutex_unlock(&list->rl_mutex);
     save_num--;
