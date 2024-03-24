@@ -140,7 +140,7 @@ int flush_command(void)
   flush = (key << CMD_KEY_BIT);
   CTC_Out(rgstr_vptr.cmd, flush);
   flush = (key << CMD_KEY_BIT)  \
-          | CMD_READY_MASK;
+          | CMD_START_MASK;
   CTC_Out(rgstr_vptr.cmd, flush);
 
   return 0;
