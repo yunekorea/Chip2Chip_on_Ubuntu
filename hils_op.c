@@ -171,7 +171,7 @@ Op_result* receive_result(void)
   result_tag = ((result_reg & ((u64)0x7F << 40)));
   result_tag = result_tag >> RES_TAG_BIT;
   result_time = (result_reg & RES_TIME_MASK);
-  chip_result_time = chip_result_reg;
+  chip_result_time = chip_result_reg & CRES_TIME_MASK;
   CTC_Out(rgstr_vptr.result_time, result_reg & ~RES_ACK_MASK);
   result->tag = (u16)result_tag;
   result->time_spent = result_time;

@@ -55,6 +55,9 @@
 #define RES_TAG_MASK        ((u64)0x7F << RES_TAG_BIT))
 #define RES_TIME_MASK       (((u64)0x01 << RES_TAG_BIT) - 1)
 
+/* chip result time */
+#define CRES_TIME_BIT       19
+#define CRES_TIME_MASK      (((u64)0x01 << (CRES_TIME_BIT + 1)) - 1)
 
 /* acknowledge*/
 #define ACK_ERASE_ERR 			  0
