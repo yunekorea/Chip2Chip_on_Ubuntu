@@ -32,8 +32,9 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
     list->req_num--;
     pthread_mutex_unlock(&list->rl_mutex);
     save_num--;
-    fprintf(res_file, "Command : %llx, Tag : %d, Timestamp : %lld \n",
+    fprintf(res_file, "Command : %llx, Op : %d, Tag : %d, Timestamp : %lld \n",
             current->command, 
+            current->operation,
             current->tag,
             current->timestamp);
     fprintf(res_file, "\tBus : %d Chip : %d Block : %d Page : %d\n",
