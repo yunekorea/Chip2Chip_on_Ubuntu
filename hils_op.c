@@ -71,7 +71,7 @@ u64 generate_command(Request *request) {
           | CMD_READY_MASK            \
           | CMD_ACK_MASK              \
           | CMD_START_MASK;
-  printf("gen command : %llx\n", command);
+  //printf("gen command : %llx\n", command);
   request->command = command;
   return command;
 }

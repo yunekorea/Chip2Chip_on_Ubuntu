@@ -46,7 +46,7 @@ Request* get_trace(FILE *trace)
     if(feof(trace) != 0)
       return NULL;
   }
-  printf("fgets done\n");
+  //printf("fgets done\n");
   sscanf(buffer, "%lld %s %hu %hu %hu %hu", &timestamp, &operation_name, &bus, &chip, &block, &page);
   //printf("%s\n", buffer);
   request = malloc(sizeof(Request));
