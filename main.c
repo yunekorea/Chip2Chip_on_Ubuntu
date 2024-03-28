@@ -61,8 +61,8 @@ void* thread_file_saver(void *data)
       save_fined_to_file(args->res_file, args->req_list);
     }
     else if(*args->trace_eof == 1 && args->req_list->last != NULL)
-      printf("thread_file_saver : eof is 1.\n");
-      //save_fined_to_file(args->res_file, args->req_list);
+      //printf("thread_file_saver : eof is 1.\n");
+      save_fined_to_file(args->res_file, args->req_list);
   }
   printf("thread_file_saver is closed\n");
   return 0;
