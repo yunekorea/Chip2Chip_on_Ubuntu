@@ -24,6 +24,7 @@ void* thread_command_generator(void *data)
   Request *req;
 
   while((req = get_trace(args->trace_file)) != NULL) {
+    printf("command generate\n");
     save_req_list(args->req_list, req);
     allocate_tag(req);
     generate_command(req);
