@@ -43,8 +43,10 @@ void* thread_result_receiver(void *data)
   while(*args->trace_eof == 0 || tag_list_empty() == 0) {
     res = NULL;
     res = receive_result();
-    if(res != NULL)
+    if(res != NULL) {
+      printf("save result to request\n");
       fin_req = save_result_to_request(res);
+    }
   }
   printf("thread_result_receiver is closed.\n");
   return 0;
@@ -54,8 +56,10 @@ void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
   while(*args->trace_eof == 0 || args->req_list->last != NULL) {
-    if(*args->trace_eof == 0 && args->req_list->req_num > 256)
+    if(*args->trace_eof == 0 && args->req_list->req_num > 256) {
+      printf("save file.\n");
       save_fined_to_file(args->res_file, args->req_list);
+    }
     else if(*args->trace_eof == 1 && args->req_list->last != NULL)
       printf("thread_file_saver : eof is 1.\n");
       save_fined_to_file(args->res_file, args->req_list);
