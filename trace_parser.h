@@ -23,6 +23,7 @@ typedef struct _Request {
   u64 result_time;
   u64 result_chip_time;
   u8 complete;
+  u8 error;
   struct _Request *prev_request;
   struct _Request *next_request;
 }Request;

@@ -68,6 +68,7 @@ Request* get_trace(FILE *trace)
   request->page = page;
 
   request->complete = 0;
+  request->error = 0;
   request->next_request = NULL;
   request->prev_request = NULL;
 

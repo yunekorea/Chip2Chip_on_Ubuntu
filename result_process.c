@@ -42,9 +42,10 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
             current->chip,
             current->block,
             current->page);
-    fprintf(res_file, "\tResult time : %lld, Chip Result time : %lld\n",
+    fprintf(res_file, "\tResult time : %lld, Chip Result time : %lld Error : %d\n",
             current->result_time, 
-            current->result_chip_time);
+            current->result_chip_time,
+            current->error);
     free(current);
     current = next;
   }

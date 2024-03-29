@@ -165,9 +165,11 @@ Op_result* receive_result(void)
   u64 result_time;
   u64 chip_result_time;
   u64 result_tag;
+  u8 result_error;
 
   result_reg = CTC_In(rgstr_vptr.result_time);
   chip_result_reg = CTC_In(rgstr_vptr.chip_res_time);
+  result_error = (result_reg & RES_ERROR_MASK) >> RES_ERROR_BIT;
   result_tag = ((result_reg & ((u64)0x7F << 40)));
   result_tag = result_tag >> RES_TAG_BIT;
   result_time = (result_reg & RES_TIME_MASK);
@@ -176,5 +178,9 @@ Op_result* receive_result(void)
   result->tag = (u16)result_tag;
   result->time_spent = result_time;
   result->chip_time_spent = chip_result_time;
+  printf("result_error before q : %d\n", result_error);
+  result_error = result_error ? 0 : 1;
+  printf("result_error after q : %d\n", result_error);
+  result->error = result_error;
   return result;
 }

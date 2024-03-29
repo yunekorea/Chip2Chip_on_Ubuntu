@@ -27,6 +27,7 @@ Request *save_result_to_request(Op_result *result)
   tags[result->tag]->result_chip_time = result->chip_time_spent;
 
   tags[result->tag]->complete = 1;
+  tags[result->tag]->error = result->error;
   fin_req = tags[result->tag];
 
   tags[result->tag] = NULL;

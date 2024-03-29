@@ -47,9 +47,11 @@
 #define CMD_START_MASK      ((u64)0x01 << CMD_START_BIT)
 
 /* result time */
+#define RES_ERROR_BIT       49
 #define RES_ACK_BIT         48
 #define RES_READY_BIT       47
 #define RES_TAG_BIT         40
+#define RES_ERROR_MASK      ((u64)0x03 << RES_ERROR_BIT)
 #define RES_ACK_MASK        ((u64)0x01 << RES_ACK_BIT)
 #define RES_READY_MASK      ((u64)0x01 << RES_READY_BIT)
 #define RES_TAG_MASK        ((u64)0x7F << RES_TAG_BIT))
