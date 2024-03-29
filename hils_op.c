@@ -178,9 +178,9 @@ Op_result* receive_result(void)
   result->tag = (u16)result_tag;
   result->time_spent = result_time;
   result->chip_time_spent = chip_result_time;
-  printf("result_error before q : %d\n", result_error);
+  //printf("result_error before q : %d\n", result_error);
   result_error = result_error ? 0 : 1;
-  printf("result_error after q : %d\n", result_error);
+  //printf("result_error after q : %d\n", result_error);
   result->error = result_error;
   return result;
 }
