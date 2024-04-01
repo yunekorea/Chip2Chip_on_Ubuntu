@@ -4,3 +4,4 @@ tags
 *.inp
 *.dat
 *.txt
+.DS_Store
