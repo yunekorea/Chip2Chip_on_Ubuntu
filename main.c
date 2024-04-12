@@ -24,11 +24,12 @@ void* thread_command_generator(void *data)
   Request *req;
 
   while((req = get_trace(args->trace_file)) != NULL) {
-    printf("command generate\n");
+    //printf("command generate\n");
     save_req_list(args->req_list, req);
     allocate_tag(req);
     generate_command(req);
     send_command(req);
+    args->currentLine += 1;
   }
 
   *args->trace_eof = 1;
@@ -45,7 +46,8 @@ void* thread_result_receiver(void *data)
     res = NULL;
     res = receive_result();
     if(res != NULL) {
-      printf("save result to request\n");
+      //printf("save result to request\n");
+      //printf("\x1b[%dA\r", 83);
       fin_req = save_result_to_request(res);
     }
   }
@@ -57,8 +59,9 @@ void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
   while(*args->trace_eof == 0 || args->req_list->last != NULL) {
+    printf("Current Line : %lld \/ %lld\r", args->currentLine, args->numberOfLine);
     if(*args->trace_eof == 0 && args->req_list->req_num > 256) {
-      printf("save file.\n");
+      //printf("save file.\n");
       save_fined_to_file(args->res_file, args->req_list);
     }
     else if(*args->trace_eof == 1 && args->req_list->last != NULL)
@@ -104,6 +107,8 @@ int main(void)
   thread_args->trace_eof = &trace_eof;
   thread_args->trace_file = trace->trfile;
   thread_args->res_file = res_file;
+  thread_args->numberOfLine = trace->numberOfLine;
+  thread_args->currentLine = 0;
 
   thread_id = pthread_create(&pthread[0], NULL, thread_command_generator, (void*)thread_args);
   thread_id = pthread_create(&pthread[1], NULL, thread_result_receiver, (void*)thread_args);

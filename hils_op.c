@@ -149,13 +149,13 @@ int flush_command(void)
 Op_result* receive_result(void)
 {
   if(wait_result_ready(1) < 0) {
-    printf("wait_result_ready timeout.\n");
+    //printf("wait_result_ready timeout.\n");
     return NULL;
   }
 
   CTC_Out(rgstr_vptr.result_time, RES_ACK_MASK);
   if(wait_result_ready(0) < 0) {
-    printf("wait_result_ready timeout.\n");
+    //printf("wait_result_ready timeout.\n");
     return NULL;
   }
 

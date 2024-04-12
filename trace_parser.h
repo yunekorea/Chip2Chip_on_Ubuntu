@@ -31,6 +31,7 @@ typedef struct _Request {
 typedef struct _Trace {
   char filename[50];
   FILE *trfile;
+  u64 numberOfLine;
 } Trace;
 
 typedef struct _Req_list {
@@ -43,6 +44,7 @@ typedef struct _Req_list {
 #endif
 
 int tracefile_open(Trace *trace);
+u64 tracefile_total_line(char* filename);
 Request* get_trace(FILE *trace);
 int free_request(Request *request);
 int save_req_list(Req_list *list, Request *request);

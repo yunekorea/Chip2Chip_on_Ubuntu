@@ -10,6 +10,8 @@ typedef struct _Thread_args {
   u8 *trace_eof;
   FILE *trace_file;
   FILE *res_file;
+  u64 numberOfLine;
+  u64 currentLine;
 } Thread_args;
 
 int initialization(void);

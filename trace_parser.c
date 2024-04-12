@@ -8,8 +8,21 @@ int tracefile_open(Trace *trace)
   trace->trfile = fopen(trace->filename, "r");
   if(trace->trfile == NULL)
     return -1;
+  trace->numberOfLine = tracefile_total_line(trace->filename);
   return 0;
 }
+
+u64 tracefile_total_line(char *filename){
+  FILE *fp;
+  u64 line = 0;
+  char c;
+  fp = fopen(filename,"r");
+  while((c = fgetc(fp)) != EOF)
+    if(c == '\n') line++;
+  fclose(fp);
+  return(line);
+}
+
 
 int save_req_list(Req_list *list, Request *request)
 {
