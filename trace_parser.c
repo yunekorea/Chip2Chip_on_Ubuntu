@@ -15,10 +15,11 @@ int tracefile_open(Trace *trace)
 u64 tracefile_total_line(char *filename){
   FILE *fp;
   u64 line = 0;
-  char c;
+  static char buffer[200];
   fp = fopen(filename,"r");
-  while((c = fgetc(fp)) != EOF)
-    if(c == '\n') line++;
+  while(fgets(buffer, 200, fp) != NULL)
+    line++;
+    *buffer = '\0';
   fclose(fp);
   return(line);
 }
