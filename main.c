@@ -59,7 +59,7 @@ void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
   while(*args->trace_eof == 0 || args->req_list->last != NULL) {
-    printf("Current Line : %lld \/ %lld\r", args->currentLine, args->numberOfLine);
+    printf("Current Line : %lld / %lld\r", args->currentLine, args->numberOfLine);
     if(*args->trace_eof == 0 && args->req_list->req_num > 256) {
       //printf("save file.\n");
       save_fined_to_file(args->res_file, args->req_list);
