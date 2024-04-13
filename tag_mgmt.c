@@ -28,6 +28,7 @@ Request *save_result_to_request(Op_result *result)
 
   tags[result->tag]->complete = 1;
   tags[result->tag]->error = result->error;
+  tags[result->tag]->global_time = result->global_time;
   fin_req = tags[result->tag];
 
   tags[result->tag] = NULL;

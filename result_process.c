@@ -42,7 +42,8 @@ int save_fined_to_file(FILE *res_file, Req_list *list)
             current->chip,
             current->block,
             current->page);
-    fprintf(res_file, "\tResult time : %lld, Chip Result time : %lld Error : %d\n",
+    fprintf(res_file, "\tGlobal time : %lld, Result time : %lld, Chip Result time : %lld Error : %d\n",
+            current->global_time,
             current->result_time, 
             current->result_chip_time,
             current->error);

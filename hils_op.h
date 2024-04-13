@@ -59,7 +59,9 @@
 
 /* chip result time */
 #define CRES_TIME_BIT       19
+#define CRES_GLBLTM_BIT     20
 #define CRES_TIME_MASK      (((u64)0x01 << (CRES_TIME_BIT + 1)) - 1)
+#define CRES_GLBLTM_MASK    ((((u64)0x01 << 44) - 1) << CRES_GLBLTM_BIT)
 
 /* acknowledge*/
 
