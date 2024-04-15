@@ -27,7 +27,9 @@ void* thread_command_generator(void *data)
   Request *req;
 
   while((req = get_trace(args->trace_file)) != NULL) {
-    //printf("command generate\n");
+#ifdef DEBUG
+    printf("command generate\n");
+#endif
     save_req_list(args->req_list, req);
     allocate_tag(req);
     generate_command(req);
@@ -54,8 +56,9 @@ void* thread_result_receiver(void *data)
     res = NULL;
     res = receive_result();
     if(res != NULL) {
-      //printf("save result to request\n");
-      //printf("\x1b[%dA\r", 83);
+#ifdef DEBUG
+      printf("save result to request\n");
+#endif
       fin_req = save_result_to_request(res);
       pthread_mutex_lock(&args->to_mutex);
       args->tags_occupied -= 1;
@@ -72,13 +75,17 @@ void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
   while(args->trace_eof == 0 || args->req_list->last != NULL) {
+#ifndef DEBUG
     printf("Current Line : %lld / %lld\t\n", args->currentLine, args->numberOfLine);
     printf("Tags occupied : %d / 128\t\n",  args->tags_occupied);
     printf("Req list size : %d \t\n", args->req_list->req_num);
     printf("EOF Status : %d\t\n", args->trace_eof);
     printf("\x1b[%dA\r", 4);
+#endif
     if(args->trace_eof == 0 && args->req_list->req_num > 256) {
-      //printf("save file.\n");
+#ifdef DEBUG
+      printf("save file.\n");
+#endif
       save_fined_to_file(args->res_file, args->req_list);
     }
     else if(args->trace_eof == 1 && args->req_list->last != NULL)
