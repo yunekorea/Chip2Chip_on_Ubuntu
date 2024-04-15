@@ -5,6 +5,9 @@ CXX = g++
 CFLAGS = \
 	-O0
 
+debug: CFLAGS += -DDEBUG -g
+debug: all
+
 all:main
 
 main: main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
