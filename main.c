@@ -2,6 +2,7 @@
 
 int initialization(void)
 {
+  printf("\e[?25l");
   printf("Initialization phase : ");
   if(c2c_init() == -1)
     return -1;
@@ -11,6 +12,7 @@ int initialization(void)
 
 int termination(void)
 {
+  printf("\e[?25h");
   printf("Termination phase : ");
   if(c2c_terminate() == -1)
     return -1;
@@ -93,8 +95,6 @@ int main(void)
   Thread_args *thread_args;
   Req_list *req_list;
 
-  printf("\e[?25l");
-
   printf("Chip2Chip HILS test\n");
   if(initialization() == -1)
     return(printf("Initialzation phase failed.\nAborting.\n"));
@@ -134,11 +134,11 @@ int main(void)
 
   fclose(trace->trfile);
   fclose(res_file);
+  
 
   if(termination() == -1)
     return(printf("Termination phase failed.\n"));
   else
     return(printf("Termination phase success.\n"));
 
-  printf("\e[?25h");
 }
