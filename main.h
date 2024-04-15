@@ -7,7 +7,7 @@
 
 typedef struct _Thread_args {
   Req_list *req_list;
-  u8 *trace_eof;
+  u8 trace_eof;
   FILE *trace_file;
   FILE *res_file;
   u64 numberOfLine;

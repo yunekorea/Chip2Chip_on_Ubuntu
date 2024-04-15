@@ -35,7 +35,7 @@ void* thread_command_generator(void *data)
     pthread_mutex_unlock(&args->to_mutex);
   }
 
-  *args->trace_eof = 1;
+  args->trace_eof = 1;
   printf("thread_command_generator is closed.\n");
   return 0;
 }
@@ -45,7 +45,7 @@ void* thread_result_receiver(void *data)
   Thread_args *args = data;
   Op_result *res = NULL;
   Request *fin_req;
-  while(*args->trace_eof == 0 || tag_list_empty() == 0) {
+  while(args->trace_eof == 0 || tag_list_empty() == 0) {
     res = NULL;
     res = receive_result();
     if(res != NULL) {
@@ -64,16 +64,17 @@ void* thread_result_receiver(void *data)
 void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
-  while(*args->trace_eof == 0 || args->req_list->last != NULL) {
-    printf("Current Line : %lld / %lld\n", args->currentLine, args->numberOfLine);
-    printf("Tags occupied : %d / 128\n",  args->tags_occupied);
-    printf("EOF Status : %d\n", args->trace_eof);
-    printf("\x1b[%dA\r", 3);
-    if(*args->trace_eof == 0 && args->req_list->req_num > 256) {
+  while(args->trace_eof == 0 || args->req_list->last != NULL) {
+    printf("Current Line : %lld / %lld\t\n", args->currentLine, args->numberOfLine);
+    printf("Tags occupied : %d / 128\t\n",  args->tags_occupied);
+    printf("Req list size : %d \t\n", args->req_list->req_num);
+    printf("EOF Status : %d\t\n", args->trace_eof);
+    printf("\x1b[%dA\r", 4);
+    if(args->trace_eof == 0 && args->req_list->req_num > 256) {
       //printf("save file.\n");
       save_fined_to_file(args->res_file, args->req_list);
     }
-    else if(*args->trace_eof == 1 && args->req_list->last != NULL)
+    else if(args->trace_eof == 1 && args->req_list->last != NULL)
       //printf("thread_file_saver : eof is 1.\n");
       save_fined_to_file(args->res_file, args->req_list);
   }
@@ -88,7 +89,7 @@ int main(void)
   pthread_t pthread[3];
   int thread_id;
   int status;
-  u8 trace_eof = 0;
+  //u8 trace_eof = 0;
   Thread_args *thread_args;
   Req_list *req_list;
 
@@ -113,7 +114,7 @@ int main(void)
 
   thread_args = malloc(sizeof(Thread_args));
   thread_args->req_list = req_list;
-  thread_args->trace_eof = &trace_eof;
+  thread_args->trace_eof = 0;
   thread_args->trace_file = trace->trfile;
   thread_args->res_file = res_file;
   thread_args->numberOfLine = trace->numberOfLine;
