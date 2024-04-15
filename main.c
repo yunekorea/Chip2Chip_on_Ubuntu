@@ -93,6 +93,8 @@ int main(void)
   Thread_args *thread_args;
   Req_list *req_list;
 
+  printf("\e[?25l");
+
   printf("Chip2Chip HILS test\n");
   if(initialization() == -1)
     return(printf("Initialzation phase failed.\nAborting.\n"));
@@ -137,4 +139,6 @@ int main(void)
     return(printf("Termination phase failed.\n"));
   else
     return(printf("Termination phase success.\n"));
+
+  printf("\e[?25h");
 }
