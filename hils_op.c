@@ -119,13 +119,17 @@ int wait_result_ready(int value)
 int send_command(Request *request)
 {
   if(wait_cmd_ready(1) < 0) {
+#ifdef DEBUG
     printf("wait_cmd_ready_1 timeout.\n");
+#endif
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command);
   CTC_Out(rgstr_vptr.timestamp, request->timestamp);
   if(wait_cmd_ready(0) < 0) {
+#ifdef DEBUG
     printf("wait_cmd_ready_0 timeout.\n");
+#endif
     return -1;
   }
   CTC_Out(rgstr_vptr.cmd, request->command & ~CMD_ACK_MASK & ~CMD_READY_MASK);
@@ -149,13 +153,17 @@ int flush_command(void)
 Op_result* receive_result(void)
 {
   if(wait_result_ready(1) < 0) {
-    //printf("wait_result_ready timeout.\n");
+#ifdef DEBUG
+    printf("wait_result_ready timeout.\n");
+#endif
     return NULL;
   }
 
   CTC_Out(rgstr_vptr.result_time, RES_ACK_MASK);
   if(wait_result_ready(0) < 0) {
-    //printf("wait_result_ready timeout.\n");
+#ifdef DEBUG
+    printf("wait_result_ready timeout.\n");
+#endif
     return NULL;
   }
 

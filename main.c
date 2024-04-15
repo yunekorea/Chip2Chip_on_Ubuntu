@@ -13,6 +13,7 @@ int initialization(void)
 int termination(void)
 {
   printf("\e[?25h");
+  printf("\n\n\n");
   printf("Termination phase : ");
   if(c2c_terminate() == -1)
     return -1;
@@ -38,8 +39,10 @@ void* thread_command_generator(void *data)
   }
 
   args->trace_eof = 1;
+#ifdef DEBUG
   printf("thread_command_generator is closed.\n");
-  return 0;
+#endif
+return 0;
 }
 
 void* thread_result_receiver(void *data)
@@ -59,8 +62,10 @@ void* thread_result_receiver(void *data)
       pthread_mutex_unlock(&args->to_mutex);
     }
   }
+#ifdef DEBUG
   printf("thread_result_receiver is closed.\n");
-  return 0;
+#endif
+return 0;
 }
 
 void* thread_file_saver(void *data)
@@ -80,7 +85,9 @@ void* thread_file_saver(void *data)
       //printf("thread_file_saver : eof is 1.\n");
       save_fined_to_file(args->res_file, args->req_list);
   }
+#ifdef DEBUG
   printf("thread_file_saver is closed\n");
+#endif
   return 0;
 }
 
