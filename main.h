@@ -12,6 +12,8 @@ typedef struct _Thread_args {
   FILE *res_file;
   u64 numberOfLine;
   u64 currentLine;
+  u16 tags_occupied;
+  pthread_mutex_t to_mutex;
 } Thread_args;
 
 int initialization(void);

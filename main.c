@@ -30,6 +30,9 @@ void* thread_command_generator(void *data)
     generate_command(req);
     send_command(req);
     args->currentLine += 1;
+    pthread_mutex_lock(&args->to_mutex);
+    args->tags_occupied += 1;
+    pthread_mutex_unlock(&args->to_mutex);
   }
 
   *args->trace_eof = 1;
@@ -49,6 +52,9 @@ void* thread_result_receiver(void *data)
       //printf("save result to request\n");
       //printf("\x1b[%dA\r", 83);
       fin_req = save_result_to_request(res);
+      pthread_mutex_lock(&args->to_mutex);
+      args->tags_occupied -= 1;
+      pthread_mutex_unlock(&args->to_mutex);
     }
   }
   printf("thread_result_receiver is closed.\n");
@@ -59,7 +65,10 @@ void* thread_file_saver(void *data)
 {
   Thread_args *args = data;
   while(*args->trace_eof == 0 || args->req_list->last != NULL) {
-    printf("Current Line : %lld / %lld\r", args->currentLine, args->numberOfLine);
+    printf("Current Line : %lld / %lld\n", args->currentLine, args->numberOfLine);
+    printf("Tags occupied : %d / 128\n",  args->tags_occupied);
+    printf("EOF Status : %d\n", args->trace_eof);
+    printf("\x1b[%dA\r", 3);
     if(*args->trace_eof == 0 && args->req_list->req_num > 256) {
       //printf("save file.\n");
       save_fined_to_file(args->res_file, args->req_list);
@@ -109,6 +118,8 @@ int main(void)
   thread_args->res_file = res_file;
   thread_args->numberOfLine = trace->numberOfLine;
   thread_args->currentLine = 0;
+  thread_args->tags_occupied = 0;
+  pthread_mutex_init(&thread_args->to_mutex, NULL);
 
   thread_id = pthread_create(&pthread[0], NULL, thread_command_generator, (void*)thread_args);
   thread_id = pthread_create(&pthread[1], NULL, thread_result_receiver, (void*)thread_args);
