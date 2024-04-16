@@ -5,10 +5,10 @@ CXX = g++
 CFLAGS = \
 	-O0
 
-debug: CFLAGS += -DDEBUG -g
-debug: all
-
 all:main
+
+debug: CFLAGS += -DDEBUG -g
+debug: main
 
 main: main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
 	gcc $(CFLAGS) -g -o main.out main.o hils_op.o result_process.o tag_mgmt.o trace_parser.o
