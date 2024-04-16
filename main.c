@@ -80,7 +80,7 @@ void* thread_file_saver(void *data)
            args->currentLine, 
            args->numberOfLine,
            ((double)args->currentLine/(double)args->numberOfLine)*100);
-    printf("Tags occupied : %d / 128\t\n",  args->tags_occupied);
+    printf("Tags occupied : %d / 128        \t\n",  args->tags_occupied);
     printf("Req list size : %d \t\n", args->req_list->req_num);
     printf("EOF Status : %d\t\n", args->trace_eof);
     printf("\x1b[%dA\r", 4);
