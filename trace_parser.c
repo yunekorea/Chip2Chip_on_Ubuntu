@@ -56,7 +56,9 @@ Request* get_trace(FILE *trace)
   Request *request;
 
   if(fgets(buffer, 200, trace) == NULL) {
+#ifdef DEBUG
     printf("fgets NULL\n");
+#endif
     if(feof(trace) != 0)
       return NULL;
   }

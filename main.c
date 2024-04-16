@@ -76,7 +76,7 @@ void* thread_file_saver(void *data)
   Thread_args *args = data;
   while(args->trace_eof == 0 || args->req_list->last != NULL) {
 #ifndef DEBUG
-    printf("Current Line : %lld / %lld (%f%%)\t\n", 
+    printf("Current Line : %lld / %lld (%.2f%%)\t\n", 
            args->currentLine, 
            args->numberOfLine,
            ((double)args->currentLine/(double)args->numberOfLine)*100);
