@@ -76,7 +76,10 @@ void* thread_file_saver(void *data)
   Thread_args *args = data;
   while(args->trace_eof == 0 || args->req_list->last != NULL) {
 #ifndef DEBUG
-    printf("Current Line : %lld / %lld\t\n", args->currentLine, args->numberOfLine);
+    printf("Current Line : %lld / %lld (%lld%%)\t\n", 
+           args->currentLine, 
+           args->numberOfLine,
+           (args->currentLine/args->numberOfLine)*100);
     printf("Tags occupied : %d / 128\t\n",  args->tags_occupied);
     printf("Req list size : %d \t\n", args->req_list->req_num);
     printf("EOF Status : %d\t\n", args->trace_eof);
