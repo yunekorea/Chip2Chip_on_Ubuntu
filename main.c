@@ -4,10 +4,14 @@ int initialization(void)
 {
   printf("\e[?25l");
   printf("Initialization phase : ");
-  if(c2c_init() == -1)
+  if(c2c_init() == -1) {
+    printf("failed.\n");
     return -1;
-  else
+  }
+  else {
+    printf("success.\n");
     return 0;
+  }
 }
 
 int termination(void)
@@ -15,10 +19,14 @@ int termination(void)
   printf("\e[?25h");
   printf("\n\n\n");
   printf("Termination phase : ");
-  if(c2c_terminate() == -1)
+  if(c2c_terminate() == -1) {
+    printf("failed.\n");
     return -1;
-  else
+  }
+  else {
+    printf("success.\n");
     return 0;
+  }
 }
 
 void* thread_command_generator(void *data)
@@ -113,11 +121,11 @@ int main(void)
   Req_list *req_list;
 
   printf("Chip2Chip HILS test\n");
-  if(initialization() == -1)
-    return(printf("Initialzation phase failed.\nAborting.\n"));
-  else
-    printf("Initialization phase success.\n");
-  
+  if(initialization() == -1) {
+    printf("Aborting.\n");
+    return -1; 
+  }
+
   if(tracefile_open(trace) == -1)
     return(printf("Failed to open the tracefile.\nAborting\n"));
   
@@ -153,9 +161,11 @@ int main(void)
   fclose(res_file);
   
 
-  if(termination() == -1)
-    return(printf("Termination phase failed.\n"));
+  if(termination() == -1) {
+    printf("Aborting.\n");
+    return -1;
+  }
   else
-    return(printf("Termination phase success.\n"));
+    return 0;
 
 }
