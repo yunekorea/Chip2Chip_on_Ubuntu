@@ -124,8 +124,8 @@ int send_command(Request *request)
 #endif
     return -1;
   }
-  CTC_Out(rgstr_vptr.cmd, request->command);
   CTC_Out(rgstr_vptr.timestamp, request->timestamp);
+  CTC_Out(rgstr_vptr.cmd, request->command);
   if(wait_cmd_ready(0) < 0) {
 #ifdef DEBUG
     printf("wait_cmd_ready_0 timeout.\n");
@@ -140,11 +140,13 @@ int flush_command(void)
 {
   u64 key = CMD_ACCESS_KEY;
   u64 flush = 0;
+  u64 zerovalue = 0;
 
   flush = (key << CMD_KEY_BIT);
   CTC_Out(rgstr_vptr.cmd, flush);
   flush = (key << CMD_KEY_BIT)  \
           | CMD_START_MASK;
+  CTC_Out(rgstr_vptr.timestamp, zerovalue);
   CTC_Out(rgstr_vptr.cmd, flush);
 
   return 0;
